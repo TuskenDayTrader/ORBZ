@@ -38,9 +38,9 @@ ORBZ/
 
 - [Collection index](./orb-collection/README.md)
 - [ORB Course Home (Accessibility-First)](./orb-collection/learning/README.md)
-- [Rules registry](./orb-collection/rules/rules-registry.md)
-- [ORB glossary](./orb-collection/reference/orb-glossary.md)
-- [Latest session: 2026-04-21](./orb-collection/sessions/2026-04-21/)
+- [Rules notes](./rules/observation-log.md)
+- [ORB glossary](./docs/glossary.md)
+- [Latest session: 2026-04-22-YM](./sessions/2026-04-22-YM/)
 
 ## Status
 
