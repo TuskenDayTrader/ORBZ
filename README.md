@@ -8,30 +8,25 @@ It holds live session records, structured extraction templates, the rules regist
 
 ## Repository Map
 
-```
+``` 
 ORBZ/
-├── README.md                         ← you are here
-└── orb-collection/
-    ├── README.md                     ← collection index + conventions
-    ├── sessions/                     ← daily YM session records
-    │   ├── 2026-04-20/               ← carry-forward block (source)
-    │   └── 2026-04-21/               ← pre-market plan + SVG + merger
-    ├── templates/                    ← reusable extraction prompts
-    │   ├── pre-market-extraction.md
-    │   ├── post-market-extraction.md
-    │   └── session-merger.md
-    ├── rules/
-    │   └── rules-registry.md         ← rules 1–26 ledger
-    ├── reference/
-    │   └── orb-glossary.md           ← ORB / IB / triple-lock terms
-    ├── learning/                     ← accessibility-first ORB course
-    │   ├── README.md                 ← master course index
-    │   ├── 01-orb-basics.md
-    │   ├── 02-timeframe-playbooks.md
-    │   ├── 03-risk-and-trade-management.md
-    │   └── 04-daily-checklist-and-journal.md
-    └── meta/
-        └── mining-prompt-v1.0.md     ← cross-session reconstruction prompt
+├── README.md                          ← you are here
+├── orb-collection/
+│   ├── README.md                      ← collection index + conventions
+│   └── learning/                      ← accessibility-first ORB course
+│       ├── README.md                  ← master course index
+│       ├── 01-orb-basics.md
+│       ├── 02-timeframe-playbooks.md
+│       ├── 03-risk-and-trade-management.md
+│       └── 04-daily-checklist-and-journal.md
+├── docs/
+│   └── glossary.md                    ← ORB glossary
+├── rules/
+│   └── observation-log.md             ← rules and observations
+├── sessions/
+│   └── 2026-04-22-YM/                 ← latest full session record
+├── orb/                               ← legacy prompt and summary assets
+└── orb_collection/                    ← legacy reconstructed knowledge base
 ```
 
 ## Quick Links
