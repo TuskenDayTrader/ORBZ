@@ -9,7 +9,9 @@
     "levels",
     "events",
     "tape",
-    "derived_flags"
+    "derived_flags",
+    "trade_intent",
+    "external_program_rules"
   ],
   "properties": {
     "session_id": { "type": "string" },
@@ -73,6 +75,61 @@
         "vwap_orbl_converged_within_5": { "type": "boolean" },
         "open_near_on_low": { "type": "boolean" },
         "prior_day_strong_up": { "type": "boolean" }
+      }
+    },
+    "trade_intent": {
+      "type": "object",
+      "required": [
+        "direction",
+        "entry_price",
+        "stop_loss",
+        "take_profits",
+        "order_is_bracket",
+        "entry_zone_type",
+        "discretionary_override",
+        "tape_confirmed",
+        "account_size",
+        "risk_dollars",
+        "contracts",
+        "move_stop_to_breakeven_after_points"
+      ],
+      "properties": {
+        "direction": { "type": "string", "enum": ["long", "short"] },
+        "entry_price": { "type": "number" },
+        "stop_loss": { "type": "number" },
+        "take_profits": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "number" }
+        },
+        "order_is_bracket": { "type": "boolean" },
+        "entry_zone_type": {
+          "type": "string",
+          "enum": ["support_edge", "resistance_edge", "session_edge", "midrange"]
+        },
+        "discretionary_override": { "type": "boolean" },
+        "tape_confirmed": { "type": "boolean" },
+        "account_size": { "type": "number" },
+        "risk_dollars": { "type": "number" },
+        "contracts": { "type": "integer", "minimum": 1 },
+        "move_stop_to_breakeven_after_points": { "type": "number", "minimum": 0 },
+        "scaling_allowed_by_program": { "type": "boolean" },
+        "max_contracts_allowed": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "external_program_rules": {
+      "type": "object",
+      "required": [
+        "daily_max_loss_verified",
+        "drawdown_verified",
+        "contract_limits_verified",
+        "source_text_provided"
+      ],
+      "properties": {
+        "daily_max_loss_verified": { "type": "boolean" },
+        "drawdown_verified": { "type": "boolean" },
+        "contract_limits_verified": { "type": "boolean" },
+        "source_text_provided": { "type": "boolean" }
       }
     }
   }

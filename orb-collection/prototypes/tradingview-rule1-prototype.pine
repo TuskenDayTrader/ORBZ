@@ -1,12 +1,35 @@
 //@version=5
 indicator("ORB Rule 1 Prototype (Two-Step Reversal)", overlay=true, max_labels_count=500)
 
-// Inputs (manual prototype mapping)
+// Inputs (Rule-1 mapping)
 ibhLevel = input.float(49810.0, "IBH (60m ORBH)")
 orblLevel = input.float(49615.0, "ORBL")
 vwapConvergence = input.float(49616.0, "VWAP/ORBL Pivot")
 wickThresholdTicks = input.int(4, "Wick Threshold (ticks)")
 showBullishInverse = input.bool(true, "Show bullish inverse branch")
+
+// Mechanical compliance inputs
+tradeDirection = input.string("short", "Planned direction", options=["long", "short"])
+entryPrice = input.float(49612.0, "Planned entry")
+stopLoss = input.float(49647.0, "Planned stop")
+tp1 = input.float(49560.0, "TP1")
+tp2 = input.float(49542.0, "TP2")
+tp3 = input.float(0.0, "TP3 (0 disables)")
+orderIsBracket = input.bool(true, "Order is bracketed")
+entryAtStructureEdge = input.bool(true, "Entry at structure edge")
+entryIsMidrange = input.bool(false, "Entry is midrange")
+discretionaryOverride = input.bool(false, "Discretionary override")
+tapeConfirmed = input.bool(true, "Tape/context confirmed")
+accountSize = input.float(50000.0, "Account size")
+riskDollars = input.float(125.0, "Risk dollars")
+contracts = input.int(1, "Contracts", minval=1)
+scalingAllowed = input.bool(false, "Scaling allowed by program")
+maxContractsAllowed = input.int(2, "Max contracts allowed", minval=1)
+moveToBreakevenAfterPoints = input.float(35.0, "Move stop to BE after points")
+dailyLossVerified = input.bool(false, "Daily max loss verified from official text")
+drawdownVerified = input.bool(false, "Drawdown verified from official text")
+contractLimitsVerified = input.bool(false, "Contract limits verified from official text")
+sourceTextProvided = input.bool(false, "Official source text pasted/provided")
 
 sessionVWAP = ta.vwap(hlc3)
 
@@ -37,14 +60,52 @@ if iblRejectedWithWick
 
 bullRule1 = showBullishInverse and sawIBLRejection and pivotReclaimed
 
+// Risk / compliance checks
+riskPerUnit = tradeDirection == "long" ? (entryPrice - stopLoss) : (stopLoss - entryPrice)
+tp3Enabled = tp3 != 0.0
+rrTp1 = riskPerUnit > 0 ? ((tradeDirection == "long" ? (tp1 - entryPrice) : (entryPrice - tp1)) / riskPerUnit) : na
+rrTp2 = riskPerUnit > 0 ? ((tradeDirection == "long" ? (tp2 - entryPrice) : (entryPrice - tp2)) / riskPerUnit) : na
+rrTp3 = riskPerUnit > 0 and tp3Enabled ? ((tradeDirection == "long" ? (tp3 - entryPrice) : (entryPrice - tp3)) / riskPerUnit) : na
+
+rrPositive = (not na(rrTp1) and rrTp1 > 1) and (not na(rrTp2) and rrTp2 > 1) and (tp3Enabled ? (not na(rrTp3) and rrTp3 > 1) : true)
+meets15 = (not na(rrTp1) and rrTp1 >= 1.5) or (not na(rrTp2) and rrTp2 >= 1.5) or (not na(rrTp3) and rrTp3 >= 1.5)
+meets20 = (not na(rrTp1) and rrTp1 >= 2.0) or (not na(rrTp2) and rrTp2 >= 2.0) or (not na(rrTp3) and rrTp3 >= 2.0)
+
+maxRiskAllowed = accountSize * 0.0025
+riskWithinLimit = riskDollars <= maxRiskAllowed
+contractsAllowed = (not scalingAllowed and contracts <= 1) or (scalingAllowed and contracts <= maxContractsAllowed)
+externalLimitsVerified = dailyLossVerified and drawdownVerified and contractLimitsVerified and sourceTextProvided
+beRuleOk = moveToBreakevenAfterPoints == 35
+mechanicalCompliancePass =
+     orderIsBracket and
+     entryAtStructureEdge and
+     not entryIsMidrange and
+     not discretionaryOverride and
+     tapeConfirmed and
+     riskPerUnit > 0 and
+     rrPositive and
+     meets15 and
+     meets20 and
+     riskWithinLimit and
+     contractsAllowed and
+     beRuleOk and
+     externalLimitsVerified
+
+blockedBearRule1 = bearRule1 and not mechanicalCompliancePass
+blockedBullRule1 = bullRule1 and not mechanicalCompliancePass
+validBearRule1 = bearRule1 and mechanicalCompliancePass
+validBullRule1 = bullRule1 and mechanicalCompliancePass
+
 plot(ibhLevel, "IBH", color=color.new(color.red, 30))
 plot(orblLevel, "ORBL", color=color.new(color.orange, 30))
 plot(vwapConvergence, "VWAP/ORBL Pivot", color=color.new(color.yellow, 0))
 plot(sessionVWAP, "Session VWAP", color=color.new(color.blue, 0))
 
 plotshape(ibhRejectedWithWick, title="IBH Rejection Wick", style=shape.triangledown, color=color.red, text="IBH Wick Rej", location=location.abovebar, size=size.tiny)
-plotshape(bearRule1, title="Rule1 Bear Trigger", style=shape.labeldown, color=color.red, text="Rule1 Bear", location=location.abovebar)
-plotshape(bullRule1, title="Rule1 Bull Trigger", style=shape.labelup, color=color.lime, text="Rule1 Bull", location=location.belowbar)
+plotshape(validBearRule1, title="Rule1 Bear Trigger", style=shape.labeldown, color=color.red, text="Rule1 Bear", location=location.abovebar)
+plotshape(validBullRule1, title="Rule1 Bull Trigger", style=shape.labelup, color=color.lime, text="Rule1 Bull", location=location.belowbar)
+plotshape(blockedBearRule1 or blockedBullRule1, title="Blocked Signal", style=shape.xcross, color=color.gray, text="BLOCK", location=location.top, size=size.tiny)
 
-alertcondition(bearRule1, "Rule1 Bearish Trigger", "Rule1 Bearish Trigger: IBH rejection followed by VWAP/ORBL pivot loss.")
-alertcondition(bullRule1, "Rule1 Bullish Trigger", "Rule1 Bullish Trigger: IBL rejection followed by VWAP reclaim.")
+alertcondition(validBearRule1, "Rule1 Bearish Trigger", "Rule1 Bearish Trigger: IBH rejection followed by VWAP/ORBL pivot loss (compliant).")
+alertcondition(validBullRule1, "Rule1 Bullish Trigger", "Rule1 Bullish Trigger: IBL rejection followed by VWAP reclaim (compliant).")
+alertcondition(blockedBearRule1 or blockedBullRule1, "Rule1 Trigger Blocked", "Rule1 trigger blocked by mechanical risk/compliance gate.")

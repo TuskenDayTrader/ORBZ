@@ -48,5 +48,27 @@
     "vwap_orbl_converged_within_5": true,
     "open_near_on_low": true,
     "prior_day_strong_up": true
+  },
+  "trade_intent": {
+    "direction": "short",
+    "entry_price": 49612,
+    "stop_loss": 49647,
+    "take_profits": [49560, 49542],
+    "order_is_bracket": true,
+    "entry_zone_type": "session_edge",
+    "discretionary_override": false,
+    "tape_confirmed": true,
+    "account_size": 50000,
+    "risk_dollars": 125,
+    "contracts": 1,
+    "move_stop_to_breakeven_after_points": 35,
+    "scaling_allowed_by_program": false,
+    "max_contracts_allowed": 2
+  },
+  "external_program_rules": {
+    "daily_max_loss_verified": false,
+    "drawdown_verified": false,
+    "contract_limits_verified": false,
+    "source_text_provided": false
   }
 }

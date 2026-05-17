@@ -6,6 +6,10 @@ Source rules:
 
 This file freezes Rule 1–4 into explicit trigger/action/invalidation logic for prototype validation.
 
+Global execution/risk enforcement is defined in:
+
+- `/home/runner/work/ORBZ/ORBZ/rules/risk-architecture-v1.md`
+
 ---
 
 ## Rule 1 — Two-Step Reversal Trigger

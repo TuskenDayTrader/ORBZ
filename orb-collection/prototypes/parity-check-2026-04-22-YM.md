@@ -14,12 +14,14 @@
 1. Rule 1 branch selected: bearish.
 2. Trigger sequence: IBH wick rejection first, then VWAP/ORBL pivot loss.
 3. Directional implication: bearish bias flip.
+4. Mechanical compliance gate status must match between Python and TradingView.
 
 ## 2026-04-22 YM expected result
 
 - IBH rejection event: present.
 - VWAP/ORBL loss event: present after IBH rejection.
-- Final Rule 1 status: `triggered=true`, `direction=bearish`.
+- Final Rule 1 signal status: `triggered=true`, `direction=bearish`.
+- Tradeability status: `tradable=false` until external program limits are verified.
 
 ## Timestamp alignment
 
