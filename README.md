@@ -8,34 +8,35 @@ It holds live session records, structured extraction templates, the rules regist
 
 ## Repository Map
 
-```
+``` 
 ORBZ/
-├── README.md                         ← you are here
-└── orb-collection/
-    ├── README.md                     ← collection index + conventions
-    ├── sessions/                     ← daily YM session records
-    │   ├── 2026-04-20/               ← carry-forward block (source)
-    │   └── 2026-04-21/               ← pre-market plan + SVG + merger
-    ├── templates/                    ← reusable extraction prompts
-    │   ├── pre-market-extraction.md
-    │   ├── post-market-extraction.md
-    │   └── session-merger.md
-    ├── rules/
-    │   └── rules-registry.md         ← rules 1–26 ledger
-    ├── reference/
-    │   └── orb-glossary.md           ← ORB / IB / triple-lock terms
-    └── meta/
-        └── mining-prompt-v1.0.md     ← cross-session reconstruction prompt
+├── README.md                          ← you are here
+├── orb-collection/
+│   ├── README.md                      ← collection index + conventions
+│   └── learning/                      ← accessibility-first ORB course
+│       ├── README.md                  ← master course index
+│       ├── 01-orb-basics.md
+│       ├── 02-timeframe-playbooks.md
+│       ├── 03-risk-and-trade-management.md
+│       └── 04-daily-checklist-and-journal.md
+├── docs/
+│   └── glossary.md                    ← ORB glossary
+├── rules/
+│   └── observation-log.md             ← rules and observations
+├── sessions/
+│   └── 2026-04-22-YM/                 ← latest full session record
+├── orb/                               ← legacy prompt and summary assets
+└── orb_collection/                    ← legacy reconstructed knowledge base
 ```
 
 ## Quick Links
 
 - [Collection index](./orb-collection/README.md)
-- [Rules registry](./orb-collection/rules/rules-registry.md)
-- [ORB glossary](./orb-collection/reference/orb-glossary.md)
-- [Latest session: 2026-04-21](./orb-collection/sessions/2026-04-21/)
+- [ORB Course Home (Accessibility-First)](./orb-collection/learning/README.md)
+- [Rules notes](./rules/observation-log.md)
+- [ORB glossary](./docs/glossary.md)
+- [Latest session: 2026-04-22-YM](./sessions/2026-04-22-YM/)
 
 ## Status
 
-🔧 **Seed commit** — collection initialized from chat artifacts on 2026-05-16.
-Many planned ORB-education components (5m/15m/30m/60m strategy guides, checklist, journal, accessibility framework) are **not yet written**. See [`meta/mining-prompt-v1.0.md`](./orb-collection/meta/mining-prompt-v1.0.md) for the full roadmap.
+✅ **ORB learning course added** — accessibility-first ORB education materials are now available in [`orb-collection/learning/`](./orb-collection/learning/).

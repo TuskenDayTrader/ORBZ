@@ -10,6 +10,7 @@ Canonical collection of all Opening Range Breakout content.
 | `templates/` | Reusable ShurmeAi prompt templates for pre-market, post-market, and merger extractions. |
 | `rules/` | The cumulative Rules Registry. Numbered, dated, and never deleted (only superseded). |
 | `reference/` | Definitions, glossary, and conceptual reference material. |
+| `learning/` | Accessibility-first ORB course materials, playbooks, checklist, and journal templates. |
 | `meta/` | Prompts and tooling for cross-session continuity and mining. |
 
 ## Session Folder Convention
@@ -38,3 +39,7 @@ Fields use the standardized ShurmeAi schema (see `templates/`).
 - **Plan vs actual conflicts** are preserved as both, never collapsed.
 - **Levels** are preferred as zones / bands over single lines.
 - **Star ratings** (★) denote level lifecycle strength per the carry-forward convention.
+
+## ORB Learning Course
+
+Start here: [ORB Course Home (Accessibility-First)](./learning/README.md)
