@@ -1,0 +1,50 @@
+//@version=5
+indicator("ORB Rule 1 Prototype (Two-Step Reversal)", overlay=true, max_labels_count=500)
+
+// Inputs (manual prototype mapping)
+ibhLevel = input.float(49810.0, "IBH (60m ORBH)")
+orblLevel = input.float(49615.0, "ORBL")
+vwapConvergence = input.float(49616.0, "VWAP/ORBL Pivot")
+wickThresholdTicks = input.int(4, "Wick Threshold (ticks)")
+showBullishInverse = input.bool(true, "Show bullish inverse branch")
+
+sessionVWAP = ta.vwap(hlc3)
+
+// Simple wick rejection proxy:
+// High breaches IBH but close returns below IBH with upper wick >= threshold.
+tickSize = syminfo.mintick
+upperWick = high - math.max(open, close)
+ibhRejectedWithWick = high > ibhLevel and close < ibhLevel and upperWick >= (wickThresholdTicks * tickSize)
+
+// Pivot loss/reclaim logic
+pivotLost = ta.crossunder(close, vwapConvergence)
+pivotReclaimed = ta.crossover(close, vwapConvergence)
+
+// Rule 1 bearish sequence state
+var bool sawIBHRejection = false
+if ibhRejectedWithWick
+    sawIBHRejection := true
+
+bearRule1 = sawIBHRejection and pivotLost
+
+// Inverse bullish sequence state (prototype)
+var bool sawIBLRejection = false
+iblLevel = input.float(49615.0, "IBL")
+lowerWick = math.min(open, close) - low
+iblRejectedWithWick = low < iblLevel and close > iblLevel and lowerWick >= (wickThresholdTicks * tickSize)
+if iblRejectedWithWick
+    sawIBLRejection := true
+
+bullRule1 = showBullishInverse and sawIBLRejection and pivotReclaimed
+
+plot(ibhLevel, "IBH", color=color.new(color.red, 30))
+plot(orblLevel, "ORBL", color=color.new(color.orange, 30))
+plot(vwapConvergence, "VWAP/ORBL Pivot", color=color.new(color.yellow, 0))
+plot(sessionVWAP, "Session VWAP", color=color.new(color.blue, 0))
+
+plotshape(ibhRejectedWithWick, title="IBH Rejection Wick", style=shape.triangledown, color=color.red, text="IBH Wick Rej", location=location.abovebar, size=size.tiny)
+plotshape(bearRule1, title="Rule1 Bear Trigger", style=shape.labeldown, color=color.red, text="Rule1 Bear", location=location.abovebar)
+plotshape(bullRule1, title="Rule1 Bull Trigger", style=shape.labelup, color=color.lime, text="Rule1 Bull", location=location.belowbar)
+
+alertcondition(bearRule1, "Rule1 Bearish Trigger", "Rule1 Bearish Trigger: IBH rejection followed by VWAP/ORBL pivot loss.")
+alertcondition(bullRule1, "Rule1 Bullish Trigger", "Rule1 Bullish Trigger: IBL rejection followed by VWAP reclaim.")

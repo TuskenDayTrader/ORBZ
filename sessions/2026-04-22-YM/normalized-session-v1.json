@@ -1,0 +1,52 @@
+{
+  "session_id": "2026-04-22-YM",
+  "date": "2026-04-22",
+  "instrument": "YM JUN26",
+  "levels": {
+    "orbh_15m": 49757,
+    "orbl_15m": 49615,
+    "orbh_30m": 49782,
+    "orbl_30m": 49615,
+    "ibh": 49810,
+    "ibl": 49615,
+    "vwap_ref": 49616,
+    "support_zones": ["49500/49510", "49559", "49438", "49339"],
+    "resistance_zones": ["49616", "49747/49757", "49782", "49810/49822", "50043"]
+  },
+  "events": [
+    {
+      "timestamp_est": "2026-04-22T10:30:00-04:00",
+      "event_type": "ibh_wick_rejection",
+      "level": 49810,
+      "note": "60m ORBH/IBH wick extension to 49822 rejected"
+    },
+    {
+      "timestamp_est": "2026-04-22T12:00:00-04:00",
+      "event_type": "vwap_orbl_loss",
+      "level": 49616,
+      "note": "VWAP/ORBL convergence pivot lost and accepted below"
+    },
+    {
+      "timestamp_est": "2026-04-22T14:30:00-04:00",
+      "event_type": "support_test",
+      "level": 49500,
+      "note": "PM flush into 49500/49510 proven shelf"
+    }
+  ],
+  "tape": {
+    "nq_new_hod": true,
+    "ym_lagging": true,
+    "rty_lagging": true,
+    "dxy_firming": true,
+    "tlt_weakening": true
+  },
+  "derived_flags": {
+    "ibh_rejected_with_wick": true,
+    "vwap_orbl_lost_after_ibh_rejection": true,
+    "ibl_rejected_with_wick": false,
+    "vwap_reclaimed_after_ibl_rejection": false,
+    "vwap_orbl_converged_within_5": true,
+    "open_near_on_low": true,
+    "prior_day_strong_up": true
+  }
+}

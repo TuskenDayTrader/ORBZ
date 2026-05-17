@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ORB Normalized Session v1",
+  "type": "object",
+  "required": [
+    "session_id",
+    "date",
+    "instrument",
+    "levels",
+    "events",
+    "tape",
+    "derived_flags"
+  ],
+  "properties": {
+    "session_id": { "type": "string" },
+    "date": { "type": "string" },
+    "instrument": { "type": "string" },
+    "levels": {
+      "type": "object",
+      "required": ["orbh_15m", "orbl_15m", "orbh_30m", "orbl_30m", "ibh", "ibl", "vwap_ref"],
+      "properties": {
+        "orbh_15m": { "type": "number" },
+        "orbl_15m": { "type": "number" },
+        "orbh_30m": { "type": "number" },
+        "orbl_30m": { "type": "number" },
+        "ibh": { "type": "number" },
+        "ibl": { "type": "number" },
+        "vwap_ref": { "type": "number" },
+        "support_zones": { "type": "array", "items": { "type": "string" } },
+        "resistance_zones": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["timestamp_est", "event_type"],
+        "properties": {
+          "timestamp_est": { "type": "string" },
+          "event_type": { "type": "string" },
+          "level": { "type": "number" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "tape": {
+      "type": "object",
+      "required": ["nq_new_hod", "ym_lagging", "rty_lagging", "dxy_firming", "tlt_weakening"],
+      "properties": {
+        "nq_new_hod": { "type": "boolean" },
+        "ym_lagging": { "type": "boolean" },
+        "rty_lagging": { "type": "boolean" },
+        "dxy_firming": { "type": "boolean" },
+        "tlt_weakening": { "type": "boolean" }
+      }
+    },
+    "derived_flags": {
+      "type": "object",
+      "required": [
+        "ibh_rejected_with_wick",
+        "vwap_orbl_lost_after_ibh_rejection",
+        "ibl_rejected_with_wick",
+        "vwap_reclaimed_after_ibl_rejection",
+        "vwap_orbl_converged_within_5",
+        "open_near_on_low",
+        "prior_day_strong_up"
+      ],
+      "properties": {
+        "ibh_rejected_with_wick": { "type": "boolean" },
+        "vwap_orbl_lost_after_ibh_rejection": { "type": "boolean" },
+        "ibl_rejected_with_wick": { "type": "boolean" },
+        "vwap_reclaimed_after_ibl_rejection": { "type": "boolean" },
+        "vwap_orbl_converged_within_5": { "type": "boolean" },
+        "open_near_on_low": { "type": "boolean" },
+        "prior_day_strong_up": { "type": "boolean" }
+      }
+    }
+  }
+}
