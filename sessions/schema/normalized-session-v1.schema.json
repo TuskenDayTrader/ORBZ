@@ -1,0 +1,136 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ORB Normalized Session v1",
+  "type": "object",
+  "required": [
+    "session_id",
+    "date",
+    "instrument",
+    "levels",
+    "events",
+    "tape",
+    "derived_flags",
+    "trade_intent",
+    "external_program_rules"
+  ],
+  "properties": {
+    "session_id": { "type": "string" },
+    "date": { "type": "string" },
+    "instrument": { "type": "string" },
+    "levels": {
+      "type": "object",
+      "required": ["orbh_15m", "orbl_15m", "orbh_30m", "orbl_30m", "ibh", "ibl", "vwap_ref"],
+      "properties": {
+        "orbh_15m": { "type": "number" },
+        "orbl_15m": { "type": "number" },
+        "orbh_30m": { "type": "number" },
+        "orbl_30m": { "type": "number" },
+        "ibh": { "type": "number" },
+        "ibl": { "type": "number" },
+        "vwap_ref": { "type": "number" },
+        "support_zones": { "type": "array", "items": { "type": "string" } },
+        "resistance_zones": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["timestamp_est", "event_type"],
+        "properties": {
+          "timestamp_est": { "type": "string" },
+          "event_type": { "type": "string" },
+          "level": { "type": "number" },
+          "note": { "type": "string" }
+        }
+      }
+    },
+    "tape": {
+      "type": "object",
+      "required": ["nq_new_hod", "ym_lagging", "rty_lagging", "dxy_firming", "tlt_weakening"],
+      "properties": {
+        "nq_new_hod": { "type": "boolean" },
+        "ym_lagging": { "type": "boolean" },
+        "rty_lagging": { "type": "boolean" },
+        "dxy_firming": { "type": "boolean" },
+        "tlt_weakening": { "type": "boolean" }
+      }
+    },
+    "derived_flags": {
+      "type": "object",
+      "required": [
+        "ibh_rejected_with_wick",
+        "vwap_orbl_lost_after_ibh_rejection",
+        "ibl_rejected_with_wick",
+        "vwap_reclaimed_after_ibl_rejection",
+        "vwap_orbl_converged_within_5",
+        "open_near_on_low",
+        "prior_day_strong_up"
+      ],
+      "properties": {
+        "ibh_rejected_with_wick": { "type": "boolean" },
+        "vwap_orbl_lost_after_ibh_rejection": { "type": "boolean" },
+        "ibl_rejected_with_wick": { "type": "boolean" },
+        "vwap_reclaimed_after_ibl_rejection": { "type": "boolean" },
+        "vwap_orbl_converged_within_5": { "type": "boolean" },
+        "open_near_on_low": { "type": "boolean" },
+        "prior_day_strong_up": { "type": "boolean" }
+      }
+    },
+    "trade_intent": {
+      "type": "object",
+      "required": [
+        "direction",
+        "entry_price",
+        "stop_loss",
+        "take_profits",
+        "order_is_bracket",
+        "entry_zone_type",
+        "discretionary_override",
+        "tape_confirmed",
+        "account_size",
+        "risk_dollars",
+        "contracts",
+        "move_stop_to_breakeven_after_points"
+      ],
+      "properties": {
+        "direction": { "type": "string", "enum": ["long", "short"] },
+        "entry_price": { "type": "number" },
+        "stop_loss": { "type": "number" },
+        "take_profits": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "number" }
+        },
+        "order_is_bracket": { "type": "boolean" },
+        "entry_zone_type": {
+          "type": "string",
+          "enum": ["support_edge", "resistance_edge", "session_edge", "midrange"]
+        },
+        "discretionary_override": { "type": "boolean" },
+        "tape_confirmed": { "type": "boolean" },
+        "account_size": { "type": "number" },
+        "risk_dollars": { "type": "number" },
+        "contracts": { "type": "integer", "minimum": 1 },
+        "move_stop_to_breakeven_after_points": { "type": "number", "minimum": 0 },
+        "scaling_allowed_by_program": { "type": "boolean" },
+        "max_contracts_allowed": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "external_program_rules": {
+      "type": "object",
+      "required": [
+        "daily_max_loss_verified",
+        "drawdown_verified",
+        "contract_limits_verified",
+        "source_text_provided"
+      ],
+      "properties": {
+        "daily_max_loss_verified": { "type": "boolean" },
+        "drawdown_verified": { "type": "boolean" },
+        "contract_limits_verified": { "type": "boolean" },
+        "source_text_provided": { "type": "boolean" }
+      }
+    }
+  }
+}

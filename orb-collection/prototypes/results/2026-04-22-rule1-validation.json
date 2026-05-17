@@ -1,0 +1,26 @@
+{
+  "session_id": "2026-04-22-YM",
+  "rule": "Rule 1 \u2014 Two-Step Reversal Trigger",
+  "triggered": true,
+  "tradable": false,
+  "direction": "bearish",
+  "entry_signal": "short_on_vwap_orbl_loss_or_retest_failure",
+  "invalidation": "reclaim_and_hold_above_vwap_orbl",
+  "trigger_event_time": "2026-04-22T12:00:00-04:00",
+  "evidence": [
+    "ibh_rejected_with_wick=true",
+    "vwap_orbl_lost_after_ibh_rejection=true"
+  ],
+  "compliance": {
+    "compliant": false,
+    "blocked_reasons": [
+      "External funded-program limits are UNCONFIRMED; trading blocked."
+    ],
+    "warnings": [],
+    "rr_values": [
+      1.5143,
+      2.0
+    ]
+  },
+  "source_input": "/home/runner/work/ORBZ/ORBZ/sessions/2026-04-22-YM/normalized-session-v1.json"
+}
