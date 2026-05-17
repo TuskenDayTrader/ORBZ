@@ -1,0 +1,238 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ORB Screenshot Opportunity Batch v1",
+  "type": "object",
+  "required": [
+    "batch_id",
+    "screenshot_count",
+    "selection_mode",
+    "ranking_mode",
+    "detected_tickers",
+    "ticker_analyses"
+  ],
+  "properties": {
+    "batch_id": { "type": "string" },
+    "screenshot_count": { "type": "integer", "minimum": 1 },
+    "selection_mode": {
+      "type": "string",
+      "enum": ["pending_user_selection", "user_selected", "analyze_all"]
+    },
+    "ranking_mode": {
+      "type": "string",
+      "enum": ["top_2_total", "top_2_longs_and_top_2_shorts"]
+    },
+    "detected_tickers": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string" }
+    },
+    "selected_tickers": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string" }
+    },
+    "ticker_analyses": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "ticker",
+          "timeframes",
+          "source_screenshot_ids",
+          "extraction_status",
+          "levels",
+          "events",
+          "tape",
+          "derived_flags",
+          "external_program_rules",
+          "candidates"
+        ],
+        "properties": {
+          "ticker": { "type": "string" },
+          "timeframes": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "source_screenshot_ids": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string" }
+          },
+          "extraction_status": {
+            "type": "string",
+            "enum": ["complete", "partial", "incomplete", "unreadable"]
+          },
+          "levels": {
+            "type": "object",
+            "required": ["orbh_15m", "orbl_15m", "orbh_30m", "orbl_30m", "ibh", "ibl", "vwap_ref"],
+            "properties": {
+              "orbh_15m": { "$ref": "#/$defs/levelValue" },
+              "orbl_15m": { "$ref": "#/$defs/levelValue" },
+              "orbh_30m": { "$ref": "#/$defs/levelValue" },
+              "orbl_30m": { "$ref": "#/$defs/levelValue" },
+              "ibh": { "$ref": "#/$defs/levelValue" },
+              "ibl": { "$ref": "#/$defs/levelValue" },
+              "vwap_ref": { "$ref": "#/$defs/levelValue" },
+              "support_zones": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "resistance_zones": {
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["timestamp_est", "event_type"],
+              "properties": {
+                "timestamp_est": { "type": "string" },
+                "event_type": { "type": "string" },
+                "level": { "$ref": "#/$defs/levelValue" },
+                "note": { "type": "string" }
+              }
+            }
+          },
+          "tape": {
+            "type": "object",
+            "required": ["nq_new_hod", "ym_lagging", "rty_lagging", "dxy_firming", "tlt_weakening"],
+            "properties": {
+              "nq_new_hod": { "$ref": "#/$defs/flagValue" },
+              "ym_lagging": { "$ref": "#/$defs/flagValue" },
+              "rty_lagging": { "$ref": "#/$defs/flagValue" },
+              "dxy_firming": { "$ref": "#/$defs/flagValue" },
+              "tlt_weakening": { "$ref": "#/$defs/flagValue" }
+            }
+          },
+          "derived_flags": {
+            "type": "object",
+            "required": [
+              "ibh_rejected_with_wick",
+              "vwap_orbl_lost_after_ibh_rejection",
+              "ibl_rejected_with_wick",
+              "vwap_reclaimed_after_ibl_rejection",
+              "vwap_orbl_converged_within_5",
+              "open_near_on_low",
+              "prior_day_strong_up"
+            ],
+            "properties": {
+              "ibh_rejected_with_wick": { "$ref": "#/$defs/flagValue" },
+              "vwap_orbl_lost_after_ibh_rejection": { "$ref": "#/$defs/flagValue" },
+              "ibl_rejected_with_wick": { "$ref": "#/$defs/flagValue" },
+              "vwap_reclaimed_after_ibl_rejection": { "$ref": "#/$defs/flagValue" },
+              "vwap_orbl_converged_within_5": { "$ref": "#/$defs/flagValue" },
+              "open_near_on_low": { "$ref": "#/$defs/flagValue" },
+              "prior_day_strong_up": { "$ref": "#/$defs/flagValue" }
+            }
+          },
+          "external_program_rules": {
+            "type": "object",
+            "required": [
+              "daily_max_loss_verified",
+              "drawdown_verified",
+              "contract_limits_verified",
+              "source_text_provided"
+            ],
+            "properties": {
+              "daily_max_loss_verified": { "type": "boolean" },
+              "drawdown_verified": { "type": "boolean" },
+              "contract_limits_verified": { "type": "boolean" },
+              "source_text_provided": { "type": "boolean" }
+            }
+          },
+          "candidates": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "direction",
+                "setup_name",
+                "entry_signal",
+                "entry_price",
+                "stop_loss",
+                "take_profits",
+                "order_is_bracket",
+                "entry_zone_type",
+                "discretionary_override",
+                "tape_confirmed",
+                "account_size",
+                "risk_dollars",
+                "contracts",
+                "move_stop_to_breakeven_after_points",
+                "confidence",
+                "levels_used",
+                "why_qualified",
+                "invalidation",
+                "evidence",
+                "missing_or_uncertain_evidence"
+              ],
+              "properties": {
+                "direction": { "type": "string", "enum": ["long", "short"] },
+                "setup_name": { "type": "string" },
+                "entry_signal": { "type": "string" },
+                "entry_price": { "type": "number" },
+                "stop_loss": { "type": "number" },
+                "take_profits": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": { "type": "number" }
+                },
+                "order_is_bracket": { "type": "boolean" },
+                "entry_zone_type": {
+                  "type": "string",
+                  "enum": ["support_edge", "resistance_edge", "session_edge", "midrange"]
+                },
+                "discretionary_override": { "type": "boolean" },
+                "tape_confirmed": { "type": "boolean" },
+                "account_size": { "type": "number" },
+                "risk_dollars": { "type": "number" },
+                "contracts": { "type": "integer", "minimum": 1 },
+                "move_stop_to_breakeven_after_points": { "type": "number", "minimum": 0 },
+                "scaling_allowed_by_program": { "type": "boolean" },
+                "max_contracts_allowed": { "type": "integer", "minimum": 1 },
+                "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+                "levels_used": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": { "type": "string" }
+                },
+                "why_qualified": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "invalidation": { "type": "string" },
+                "evidence": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "missing_or_uncertain_evidence": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "levelValue": {
+      "oneOf": [
+        { "type": "number" },
+        { "type": "string", "enum": ["missing", "uncertain"] }
+      ]
+    },
+    "flagValue": {
+      "oneOf": [
+        { "type": "boolean" },
+        { "type": "string", "enum": ["missing", "uncertain"] }
+      ]
+    }
+  }
+}

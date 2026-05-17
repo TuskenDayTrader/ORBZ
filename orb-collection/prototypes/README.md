@@ -2,8 +2,11 @@
 
 ## Files
 
+- `rule_engine.py` — shared Rule 1 and compliance helpers for prototype validators/rankers.
 - `rule1_validator.py` — Python replay validator for Rule 1 + mechanical compliance enforcement.
+- `opportunity_ranker.py` — Python prototype for selected-ticker opportunity ranking from structured screenshot extraction.
 - `tradingview-rule1-prototype.pine` — TradingView indicator prototype for Rule 1 with compliance gate.
+- `examples/screenshot-opportunity-batch-v1.json` — structured screenshot-analysis input example for the ranker.
 - `parity-check-2026-04-22-YM.md` — parity criteria and expected outcome.
 - `results/` — Python validator outputs.
 
@@ -25,4 +28,12 @@ From repository root:
 
 ```bash
 python3 /home/runner/work/ORBZ/ORBZ/orb-collection/prototypes/rule1_validator.py
+```
+
+## Run screenshot opportunity ranker
+
+From repository root:
+
+```bash
+python3 /home/runner/work/ORBZ/ORBZ/orb-collection/prototypes/opportunity_ranker.py
 ```

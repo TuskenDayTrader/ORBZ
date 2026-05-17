@@ -1,0 +1,243 @@
+{
+  "batch_id": "2026-05-17-screenshot-batch-demo",
+  "screenshot_count": 8,
+  "selection_mode": "user_selected",
+  "ranking_mode": "top_2_total",
+  "detected_tickers": ["YM", "NQ", "RTY", "ES", "AAPL", "MSFT", "NVDA", "TSLA"],
+  "selected_tickers": ["YM", "NQ"],
+  "ticker_analyses": [
+    {
+      "ticker": "YM",
+      "timeframes": ["5m", "15m"],
+      "source_screenshot_ids": ["shot-01", "shot-02"],
+      "extraction_status": "complete",
+      "levels": {
+        "orbh_15m": 49747,
+        "orbl_15m": 49616,
+        "orbh_30m": 49810,
+        "orbl_30m": 49564,
+        "ibh": 49747,
+        "ibl": 49564,
+        "vwap_ref": 49616,
+        "support_zones": ["49555-49545", "49500-49492"],
+        "resistance_zones": ["49616-49625", "49747-49810"]
+      },
+      "events": [
+        {
+          "timestamp_est": "2026-05-17T10:15:00-04:00",
+          "event_type": "ibh_rejection",
+          "level": 49747,
+          "note": "Upper wick rejection at IBH."
+        },
+        {
+          "timestamp_est": "2026-05-17T10:25:00-04:00",
+          "event_type": "vwap_orbl_loss",
+          "level": 49616,
+          "note": "VWAP and ORBL lost together."
+        }
+      ],
+      "tape": {
+        "nq_new_hod": true,
+        "ym_lagging": true,
+        "rty_lagging": true,
+        "dxy_firming": true,
+        "tlt_weakening": true
+      },
+      "derived_flags": {
+        "ibh_rejected_with_wick": true,
+        "vwap_orbl_lost_after_ibh_rejection": true,
+        "ibl_rejected_with_wick": false,
+        "vwap_reclaimed_after_ibl_rejection": false,
+        "vwap_orbl_converged_within_5": true,
+        "open_near_on_low": false,
+        "prior_day_strong_up": false
+      },
+      "external_program_rules": {
+        "daily_max_loss_verified": true,
+        "drawdown_verified": true,
+        "contract_limits_verified": true,
+        "source_text_provided": true
+      },
+      "candidates": [
+        {
+          "direction": "short",
+          "setup_name": "Failed IBH fade into VWAP/ORBL loss",
+          "entry_signal": "short_on_vwap_orbl_loss_or_retest_failure",
+          "entry_price": 49610,
+          "stop_loss": 49645,
+          "take_profits": [49555, 49500],
+          "order_is_bracket": true,
+          "entry_zone_type": "session_edge",
+          "discretionary_override": false,
+          "tape_confirmed": true,
+          "account_size": 50000,
+          "risk_dollars": 100,
+          "contracts": 1,
+          "move_stop_to_breakeven_after_points": 35,
+          "scaling_allowed_by_program": false,
+          "max_contracts_allowed": 1,
+          "confidence": 0.88,
+          "levels_used": ["49616 VWAP/ORBL pivot", "49555 support shelf", "49500 ON low"],
+          "why_qualified": [
+            "Rule 1 bearish sequence completed from the screenshots.",
+            "Tape context favors fading YM rallies while NQ leads."
+          ],
+          "invalidation": "Reclaim and hold above 49616 VWAP/ORBL pivot.",
+          "evidence": [
+            "IBH rejection wick is visible near 49747.",
+            "VWAP and ORBL break together at 49616.",
+            "RTY lag plus firming DXY confirmed bearish context."
+          ],
+          "missing_or_uncertain_evidence": []
+        },
+        {
+          "direction": "long",
+          "setup_name": "Countertrend VWAP reclaim attempt",
+          "entry_signal": "long_on_vwap_reclaim_or_retest_hold",
+          "entry_price": 49628,
+          "stop_loss": 49596,
+          "take_profits": [49670, 49710],
+          "order_is_bracket": true,
+          "entry_zone_type": "session_edge",
+          "discretionary_override": false,
+          "tape_confirmed": false,
+          "account_size": 50000,
+          "risk_dollars": 100,
+          "contracts": 1,
+          "move_stop_to_breakeven_after_points": 35,
+          "scaling_allowed_by_program": false,
+          "max_contracts_allowed": 1,
+          "confidence": 0.42,
+          "levels_used": ["49616 VWAP/ORBL pivot"],
+          "why_qualified": [
+            "Possible reclaim if buyers retake the pivot."
+          ],
+          "invalidation": "Lose 49616 again after the reclaim.",
+          "evidence": [
+            "Single reclaim attempt from the screenshot."
+          ],
+          "missing_or_uncertain_evidence": [
+            "No bullish tape confirmation."
+          ]
+        }
+      ]
+    },
+    {
+      "ticker": "NQ",
+      "timeframes": ["5m", "15m"],
+      "source_screenshot_ids": ["shot-03", "shot-04"],
+      "extraction_status": "complete",
+      "levels": {
+        "orbh_15m": 18245,
+        "orbl_15m": 18196,
+        "orbh_30m": 18270,
+        "orbl_30m": 18180,
+        "ibh": 18245,
+        "ibl": 18190,
+        "vwap_ref": 18202,
+        "support_zones": ["18202-18196", "18180-18170"],
+        "resistance_zones": ["18245-18255", "18270-18280"]
+      },
+      "events": [
+        {
+          "timestamp_est": "2026-05-17T10:10:00-04:00",
+          "event_type": "ibl_rejection",
+          "level": 18190,
+          "note": "Lower wick rejection at IBL."
+        },
+        {
+          "timestamp_est": "2026-05-17T10:18:00-04:00",
+          "event_type": "vwap_reclaim",
+          "level": 18202,
+          "note": "VWAP reclaimed after IBL rejection."
+        }
+      ],
+      "tape": {
+        "nq_new_hod": true,
+        "ym_lagging": false,
+        "rty_lagging": false,
+        "dxy_firming": false,
+        "tlt_weakening": true
+      },
+      "derived_flags": {
+        "ibh_rejected_with_wick": false,
+        "vwap_orbl_lost_after_ibh_rejection": false,
+        "ibl_rejected_with_wick": true,
+        "vwap_reclaimed_after_ibl_rejection": true,
+        "vwap_orbl_converged_within_5": false,
+        "open_near_on_low": false,
+        "prior_day_strong_up": false
+      },
+      "external_program_rules": {
+        "daily_max_loss_verified": true,
+        "drawdown_verified": true,
+        "contract_limits_verified": true,
+        "source_text_provided": true
+      },
+      "candidates": [
+        {
+          "direction": "long",
+          "setup_name": "IBL rejection with VWAP reclaim",
+          "entry_signal": "long_on_vwap_reclaim_or_retest_hold",
+          "entry_price": 18205,
+          "stop_loss": 18185,
+          "take_profits": [18240, 18260],
+          "order_is_bracket": true,
+          "entry_zone_type": "support_edge",
+          "discretionary_override": false,
+          "tape_confirmed": true,
+          "account_size": 50000,
+          "risk_dollars": 95,
+          "contracts": 1,
+          "move_stop_to_breakeven_after_points": 35,
+          "scaling_allowed_by_program": false,
+          "max_contracts_allowed": 1,
+          "confidence": 0.83,
+          "levels_used": ["18202 VWAP reclaim", "18245 ORBH retest", "18260 extension target"],
+          "why_qualified": [
+            "Rule 1 bullish inverse branch is complete.",
+            "Reclaimed VWAP after rejecting IBL support."
+          ],
+          "invalidation": "Lose VWAP after reclaim and fail to recover.",
+          "evidence": [
+            "IBL rejection wick is visible around 18190.",
+            "VWAP reclaim is confirmed on the next push higher.",
+            "Price acceptance above 18202 is visible."
+          ],
+          "missing_or_uncertain_evidence": []
+        },
+        {
+          "direction": "short",
+          "setup_name": "Weak fade against reclaimed VWAP",
+          "entry_signal": "fade_without_rule_alignment",
+          "entry_price": 18230,
+          "stop_loss": 18248,
+          "take_profits": [18205, 18192],
+          "order_is_bracket": true,
+          "entry_zone_type": "resistance_edge",
+          "discretionary_override": false,
+          "tape_confirmed": false,
+          "account_size": 50000,
+          "risk_dollars": 90,
+          "contracts": 1,
+          "move_stop_to_breakeven_after_points": 35,
+          "scaling_allowed_by_program": false,
+          "max_contracts_allowed": 1,
+          "confidence": 0.46,
+          "levels_used": ["18245 ORBH area"],
+          "why_qualified": [
+            "Possible fade into ORBH resistance."
+          ],
+          "invalidation": "Acceptance above 18245.",
+          "evidence": [
+            "Single stall near ORBH."
+          ],
+          "missing_or_uncertain_evidence": [
+            "No bearish trigger sequence.",
+            "No bearish tape confirmation."
+          ]
+        }
+      ]
+    }
+  ]
+}

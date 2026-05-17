@@ -7,7 +7,7 @@ Canonical collection of all Opening Range Breakout content.
 | Folder | Purpose |
 |---|---|
 | `sessions/` | One subfolder per trading day. Holds pre-market extractions, SVG visuals, post-market extractions, and merged canonical records. |
-| `templates/` | Reusable ShurmeAi prompt templates for pre-market, post-market, and merger extractions. |
+| `templates/` | Reusable ShurmeAi and app-orchestration prompt templates, including screenshot intake and ranking flow. |
 | `rules/` | The cumulative Rules Registry. Numbered, dated, and never deleted (only superseded). |
 | `reference/` | Definitions, glossary, and conceptual reference material. |
 | `learning/` | Accessibility-first ORB course materials, playbooks, checklist, and journal templates. |
@@ -23,7 +23,7 @@ Each `sessions/YYYY-MM-DD/` folder may contain:
 - `session-merger.md` — canonical merged record (plan vs actual)
 - `carry-forward-block.md` — handoff block to the next session
 
-Fields use the standardized ShurmeAi schema (see `templates/`).
+Fields use the standardized ShurmeAi schema and workflow templates (see `templates/` and `/home/runner/work/ORBZ/ORBZ/rules/extraction-templates.md`).
 
 ## Current Inventory
 

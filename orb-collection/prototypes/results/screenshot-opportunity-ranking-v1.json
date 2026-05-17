@@ -1,0 +1,223 @@
+{
+  "status": "ranked",
+  "ranking_mode": "top_2_total",
+  "analyzed_tickers": [
+    "YM",
+    "NQ"
+  ],
+  "per_ticker": {
+    "YM": {
+      "long": {
+        "status": "no_qualified_opportunity",
+        "ticker": "YM",
+        "direction": "long",
+        "setup_name": "Countertrend VWAP reclaim attempt",
+        "reasons": [
+          "Confidence is below the 0.50 minimum.",
+          "Candidate requires at least two evidence points.",
+          "Candidate does not align with the deterministic long/short trigger rules.",
+          "Tape/context confirmation is required."
+        ],
+        "missing_or_uncertain_evidence": [
+          "No bullish tape confirmation."
+        ]
+      },
+      "short": {
+        "status": "qualified",
+        "ticker": "YM",
+        "direction": "short",
+        "setup_name": "Failed IBH fade into VWAP/ORBL loss",
+        "entry_signal": "short_on_vwap_orbl_loss_or_retest_failure",
+        "score": 95.8,
+        "score_breakdown": {
+          "confidence_component": 52.8,
+          "evidence_component": 15,
+          "qualification_component": 8,
+          "tape_component": 10,
+          "rule1_component": 10,
+          "missing_penalty": 0
+        },
+        "exact_levels_or_zones_used": [
+          "49616 VWAP/ORBL pivot",
+          "49555 support shelf",
+          "49500 ON low"
+        ],
+        "why_it_qualifies_under_orbz_rules": [
+          "Rule 1 bearish branch triggered.",
+          "IBH rejection plus VWAP/ORBL loss supports short continuation.",
+          "Rule 1 bearish sequence completed from the screenshots.",
+          "Tape context favors fading YM rallies while NQ leads.",
+          "Compliance gates passed."
+        ],
+        "what_would_invalidate_it": "Reclaim and hold above 49616 VWAP/ORBL pivot.",
+        "confidence": 0.88,
+        "missing_or_uncertain_evidence": [],
+        "evidence": [
+          "IBH rejection wick is visible near 49747.",
+          "VWAP and ORBL break together at 49616.",
+          "RTY lag plus firming DXY confirmed bearish context.",
+          "ibh_rejected_with_wick=true",
+          "vwap_orbl_lost_after_ibh_rejection=true"
+        ],
+        "rr_values": [
+          1.5714,
+          3.1429
+        ],
+        "warnings": [],
+        "rank": 1
+      }
+    },
+    "NQ": {
+      "long": {
+        "status": "qualified",
+        "ticker": "NQ",
+        "direction": "long",
+        "setup_name": "IBL rejection with VWAP reclaim",
+        "entry_signal": "long_on_vwap_reclaim_or_retest_hold",
+        "score": 92.8,
+        "score_breakdown": {
+          "confidence_component": 49.8,
+          "evidence_component": 15,
+          "qualification_component": 8,
+          "tape_component": 10,
+          "rule1_component": 10,
+          "missing_penalty": 0
+        },
+        "exact_levels_or_zones_used": [
+          "18202 VWAP reclaim",
+          "18245 ORBH retest",
+          "18260 extension target"
+        ],
+        "why_it_qualifies_under_orbz_rules": [
+          "Rule 1 bullish branch triggered.",
+          "IBL rejection plus VWAP reclaim supports long continuation.",
+          "Rule 1 bullish inverse branch is complete.",
+          "Reclaimed VWAP after rejecting IBL support.",
+          "Compliance gates passed."
+        ],
+        "what_would_invalidate_it": "Lose VWAP after reclaim and fail to recover.",
+        "confidence": 0.83,
+        "missing_or_uncertain_evidence": [],
+        "evidence": [
+          "IBL rejection wick is visible around 18190.",
+          "VWAP reclaim is confirmed on the next push higher.",
+          "Price acceptance above 18202 is visible.",
+          "ibl_rejected_with_wick=true",
+          "vwap_reclaimed_after_ibl_rejection=true"
+        ],
+        "rr_values": [
+          1.75,
+          2.75
+        ],
+        "warnings": [],
+        "rank": 2
+      },
+      "short": {
+        "status": "no_qualified_opportunity",
+        "ticker": "NQ",
+        "direction": "short",
+        "setup_name": "Weak fade against reclaimed VWAP",
+        "reasons": [
+          "Confidence is below the 0.50 minimum.",
+          "Candidate requires at least two evidence points.",
+          "Candidate does not align with the deterministic long/short trigger rules.",
+          "Tape/context confirmation is required."
+        ],
+        "missing_or_uncertain_evidence": [
+          "No bearish trigger sequence.",
+          "No bearish tape confirmation."
+        ]
+      }
+    }
+  },
+  "ranked_opportunities": [
+    {
+      "status": "qualified",
+      "ticker": "YM",
+      "direction": "short",
+      "setup_name": "Failed IBH fade into VWAP/ORBL loss",
+      "entry_signal": "short_on_vwap_orbl_loss_or_retest_failure",
+      "score": 95.8,
+      "score_breakdown": {
+        "confidence_component": 52.8,
+        "evidence_component": 15,
+        "qualification_component": 8,
+        "tape_component": 10,
+        "rule1_component": 10,
+        "missing_penalty": 0
+      },
+      "exact_levels_or_zones_used": [
+        "49616 VWAP/ORBL pivot",
+        "49555 support shelf",
+        "49500 ON low"
+      ],
+      "why_it_qualifies_under_orbz_rules": [
+        "Rule 1 bearish branch triggered.",
+        "IBH rejection plus VWAP/ORBL loss supports short continuation.",
+        "Rule 1 bearish sequence completed from the screenshots.",
+        "Tape context favors fading YM rallies while NQ leads.",
+        "Compliance gates passed."
+      ],
+      "what_would_invalidate_it": "Reclaim and hold above 49616 VWAP/ORBL pivot.",
+      "confidence": 0.88,
+      "missing_or_uncertain_evidence": [],
+      "evidence": [
+        "IBH rejection wick is visible near 49747.",
+        "VWAP and ORBL break together at 49616.",
+        "RTY lag plus firming DXY confirmed bearish context.",
+        "ibh_rejected_with_wick=true",
+        "vwap_orbl_lost_after_ibh_rejection=true"
+      ],
+      "rr_values": [
+        1.5714,
+        3.1429
+      ],
+      "warnings": [],
+      "rank": 1
+    },
+    {
+      "status": "qualified",
+      "ticker": "NQ",
+      "direction": "long",
+      "setup_name": "IBL rejection with VWAP reclaim",
+      "entry_signal": "long_on_vwap_reclaim_or_retest_hold",
+      "score": 92.8,
+      "score_breakdown": {
+        "confidence_component": 49.8,
+        "evidence_component": 15,
+        "qualification_component": 8,
+        "tape_component": 10,
+        "rule1_component": 10,
+        "missing_penalty": 0
+      },
+      "exact_levels_or_zones_used": [
+        "18202 VWAP reclaim",
+        "18245 ORBH retest",
+        "18260 extension target"
+      ],
+      "why_it_qualifies_under_orbz_rules": [
+        "Rule 1 bullish branch triggered.",
+        "IBL rejection plus VWAP reclaim supports long continuation.",
+        "Rule 1 bullish inverse branch is complete.",
+        "Reclaimed VWAP after rejecting IBL support.",
+        "Compliance gates passed."
+      ],
+      "what_would_invalidate_it": "Lose VWAP after reclaim and fail to recover.",
+      "confidence": 0.83,
+      "missing_or_uncertain_evidence": [],
+      "evidence": [
+        "IBL rejection wick is visible around 18190.",
+        "VWAP reclaim is confirmed on the next push higher.",
+        "Price acceptance above 18202 is visible.",
+        "ibl_rejected_with_wick=true",
+        "vwap_reclaimed_after_ibl_rejection=true"
+      ],
+      "rr_values": [
+        1.75,
+        2.75
+      ],
+      "warnings": [],
+      "rank": 2
+    }
+  ]
+}
