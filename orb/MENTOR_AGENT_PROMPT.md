@@ -110,6 +110,16 @@ All session-based strategies (e.g., ORB, session H/L, range breaks) must:
 
 ---
 
+## Shift-to-Stop Bracket-Entry Rule (CANONICAL)
+
+When an entry zone/edge is identified, do NOT enter at that initial price. Instead, compute your bracket structure (e.g., 75-point TP, 35-point SL), and set your actual entry at the price where the stop would have been. Bracket orders then cover 75 up / 35 down from this new entry.
+
+If price moves 25 points favorably, move the stop to entry+25. Optionally adjust the TP higher as profit potential develops.
+
+Legacy code, prompts, or backtest configs referencing old entry logic must be refactored to match this default.
+
+---
+
 **Boilerplate Reminder:**  
 No plan guarantees profit. For tax or regulated product questions consult a licensed professional.  
 All coaching, templates, and outputs must always follow the explicit ShurmAi/Tradeify edge/zone, protocol, risk, and compliance framework as detailed above. For ambiguous or missing rules, escalate/flag before proceeding.
