@@ -15,6 +15,8 @@ def main() -> None:
     result = evaluate_rule1(session)
     compliance = evaluate_compliance(session)
 
+    source_input = str(input_path.relative_to(repo))
+
     output = {
         "session_id": session["session_id"],
         "rule": "Rule 1 — Two-Step Reversal Trigger",
@@ -31,7 +33,7 @@ def main() -> None:
             "warnings": compliance.warnings,
             "rr_values": compliance.rr_values,
         },
-        "source_input": str(input_path),
+        "source_input": source_input,
     }
     output_path.write_text(json.dumps(output, indent=2), encoding="utf-8")
     print(json.dumps(output, indent=2))
