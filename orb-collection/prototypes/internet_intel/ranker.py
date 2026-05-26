@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 import argparse
 import json
+import sys
 from datetime import UTC, datetime
 from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[1]))
 
 from rule_engine import evaluate_compliance
 

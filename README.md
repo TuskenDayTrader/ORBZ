@@ -32,6 +32,7 @@ ORBZ/
 ## Quick Links
 
 - [Collection index](./orb-collection/README.md)
+- [Internet intelligence prototype module](./orb-collection/prototypes/internet_intel/README.md)
 - [ORB Course Home (Accessibility-First)](./orb-collection/learning/README.md)
 - [Rules notes](./rules/observation-log.md)
 - [ORB glossary](./docs/glossary.md)
@@ -40,3 +41,4 @@ ORBZ/
 ## Status
 
 ✅ **ORB learning course added** — accessibility-first ORB education materials are now available in [`orb-collection/learning/`](./orb-collection/learning/).
+✅ **Internet intelligence ingestion prototype added** — deterministic source-policy, ingestion, and ranked-feed tooling now lives in [`orb-collection/prototypes/internet_intel/`](./orb-collection/prototypes/internet_intel/).

@@ -13,6 +13,60 @@ def _confidence_for_record(source_tier: str, evidence_text: str) -> float:
     return min(0.99, base + evidence_bonus)
 
 
+def _trade_candidate_for_source(source_id: str) -> dict | None:
+    if source_id == "fomc_press_releases":
+        return {
+            "trade_intent": {
+                "direction": "short",
+                "entry_price": 49610,
+                "stop_loss": 49645,
+                "take_profits": [49560, 49500],
+                "order_is_bracket": True,
+                "entry_zone_type": "session_edge",
+                "discretionary_override": False,
+                "tape_confirmed": True,
+                "account_size": 50000,
+                "risk_dollars": 100,
+                "contracts": 1,
+                "move_stop_to_breakeven_after_points": 35,
+                "scaling_allowed_by_program": False,
+                "max_contracts_allowed": 1,
+            },
+            "external_program_rules": {
+                "daily_max_loss_verified": True,
+                "drawdown_verified": True,
+                "contract_limits_verified": True,
+                "source_text_provided": True,
+            },
+        }
+    if source_id == "cme_economic_calendar":
+        return {
+            "trade_intent": {
+                "direction": "long",
+                "entry_price": 18205,
+                "stop_loss": 18195,
+                "take_profits": [18225],
+                "order_is_bracket": True,
+                "entry_zone_type": "midrange",
+                "discretionary_override": False,
+                "tape_confirmed": True,
+                "account_size": 50000,
+                "risk_dollars": 90,
+                "contracts": 1,
+                "move_stop_to_breakeven_after_points": 35,
+                "scaling_allowed_by_program": False,
+                "max_contracts_allowed": 1,
+            },
+            "external_program_rules": {
+                "daily_max_loss_verified": True,
+                "drawdown_verified": True,
+                "contract_limits_verified": True,
+                "source_text_provided": True,
+            },
+        }
+    return None
+
+
 def normalize_snapshot(snapshot: dict) -> dict:
     catalog = {source.source_id: source for source in DEFAULT_SOURCE_CATALOG}
     analyses = []
@@ -45,13 +99,13 @@ def normalize_snapshot(snapshot: dict) -> dict:
                     "signal_type": "macro_context",
                     "direction_bias": "neutral",
                     "orb_relevance": 0.6,
-                    "recency_minutes": 30,
+                    "recency_minutes": 30 if source.tier in {"official", "macro_api"} else 120,
                     "rule_alignment": {
                         "deterministic": True,
                         "zone_edge_only": True,
                         "tape_confirmed": True,
                     },
-                    "trade_candidate": None,
+                    "trade_candidate": _trade_candidate_for_source(source.source_id),
                     "provenance": provenance,
                 }
             )
