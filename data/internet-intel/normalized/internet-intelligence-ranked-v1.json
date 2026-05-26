@@ -1,0 +1,74 @@
+{
+  "batch_id": "internet-intel-2026-05-26T00:00:00Z",
+  "generated_at": "2026-05-26T01:36:09Z",
+  "rule_qualified": [
+    {
+      "insight_id": "fomc_press_releases-1",
+      "title": "FOMC releases policy statement",
+      "source_name": "Federal Reserve Press Releases",
+      "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260526a.htm",
+      "verification_status": "verified",
+      "confidence": 0.99,
+      "score": 85.7,
+      "score_breakdown": {
+        "relevance_component": 21.0,
+        "reliability_component": 29.7,
+        "recency_component": 20.0,
+        "rule_alignment_component": 15.0
+      },
+      "status": "rule_qualified",
+      "reasons": [
+        "Trade candidate passed ORBZ compliance gates."
+      ],
+      "evidence_text": "The Federal Reserve kept rates unchanged and emphasized incoming data dependence.",
+      "fetched_at": "2026-05-26T00:00:00Z",
+      "rank": 1
+    }
+  ],
+  "blocked": [
+    {
+      "insight_id": "cme_economic_calendar-1",
+      "title": "US macro calendar highlights include CPI and employment events likely to impact index futures volatility.",
+      "source_name": "CME Economic Releases",
+      "source_url": "https://www.cmegroup.com/markets/equities.html",
+      "verification_status": "verified",
+      "confidence": 0.99,
+      "score": 82.73,
+      "score_breakdown": {
+        "relevance_component": 21.0,
+        "reliability_component": 26.73,
+        "recency_component": 20.0,
+        "rule_alignment_component": 15.0
+      },
+      "status": "blocked",
+      "reasons": [
+        "Midrange entries are prohibited."
+      ],
+      "evidence_text": "US macro calendar highlights include CPI and employment events likely to impact index futures volatility.",
+      "fetched_at": "2026-05-26T00:00:00Z"
+    }
+  ],
+  "informational": [
+    {
+      "insight_id": "stlouisfed_research-1",
+      "title": "Labor market cooling and rates sensitivity",
+      "source_name": "St. Louis Fed Research",
+      "source_url": "https://www.stlouisfed.org/on-the-economy/2026/may/labor-market-cooling",
+      "verification_status": "verified",
+      "confidence": 0.95,
+      "score": 75.22,
+      "score_breakdown": {
+        "relevance_component": 21.0,
+        "reliability_component": 24.23,
+        "recency_component": 15.0,
+        "rule_alignment_component": 15.0
+      },
+      "status": "informational",
+      "reasons": [
+        "No trade candidate attached; insight remains informational."
+      ],
+      "evidence_text": "Research note highlights moderating labor momentum and implications for rate-sensitive assets.",
+      "fetched_at": "2026-05-26T00:00:00Z"
+    }
+  ]
+}

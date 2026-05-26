@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import './App.css';
-import type { CsvOrbRow, NormalizedSession, OpportunityBatch } from './types';
+import type { CsvOrbRow, NormalizedSession, OpportunityBatch, InternetIntelligenceFeed } from './types';
 import { parseOrbCsv, getUniqueDates } from './data/parseOrbCsv';
 import { SessionSelector } from './components/SessionSelector';
 import { LevelsPanel } from './components/LevelsPanel';
@@ -10,6 +10,7 @@ import { RuleEnginePanel } from './components/RuleEnginePanel';
 import { CompliancePanel } from './components/CompliancePanel';
 import { ForecastPanel } from './components/ForecastPanel';
 import { EventTimeline } from './components/EventTimeline';
+import { InternetIntelligencePanel } from './components/InternetIntelligencePanel';
 
 function App() {
   const [csvRows, setCsvRows] = useState<CsvOrbRow[]>([]);
@@ -17,6 +18,7 @@ function App() {
   const [selectedTf, setSelectedTf] = useState<'15m' | '30m' | '60m'>('15m');
   const [session, setSession] = useState<NormalizedSession | null>(null);
   const [batch, setBatch] = useState<OpportunityBatch | null>(null);
+  const [internetFeed, setInternetFeed] = useState<InternetIntelligenceFeed | null>(null);
 
   useEffect(() => {
     fetch('/data/ym-orb-levels.csv')
@@ -34,6 +36,11 @@ function App() {
     fetch('/data/screenshot-opportunity-batch-v1.json')
       .then(r => r.json())
       .then(setBatch)
+      .catch(console.error);
+
+    fetch('/data/internet-intelligence-ranked-v1.json')
+      .then(r => r.json())
+      .then(setInternetFeed)
       .catch(console.error);
   }, []);
 
@@ -77,6 +84,8 @@ function App() {
       </div>
 
       <ForecastPanel batch={batch} />
+
+      <InternetIntelligencePanel feed={internetFeed} />
 
       <EventTimeline events={session?.events ?? []} />
     </div>

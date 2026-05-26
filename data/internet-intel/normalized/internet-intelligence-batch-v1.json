@@ -1,0 +1,144 @@
+{
+  "$schema": "./internet-intelligence-batch-v1.schema.json",
+  "batch_id": "internet-intel-2026-05-26T00:00:00Z",
+  "fetched_at": "2026-05-26T00:00:00Z",
+  "sources_seen": [
+    "cme_economic_calendar",
+    "fomc_press_releases",
+    "stlouisfed_research"
+  ],
+  "insights": [
+    {
+      "insight_id": "fomc_press_releases-1",
+      "title": "FOMC releases policy statement",
+      "signal_type": "macro_context",
+      "direction_bias": "neutral",
+      "orb_relevance": 0.6,
+      "recency_minutes": 30,
+      "rule_alignment": {
+        "deterministic": true,
+        "zone_edge_only": true,
+        "tape_confirmed": true
+      },
+      "trade_candidate": {
+        "trade_intent": {
+          "direction": "short",
+          "entry_price": 49610,
+          "stop_loss": 49645,
+          "take_profits": [
+            49560,
+            49500
+          ],
+          "order_is_bracket": true,
+          "entry_zone_type": "session_edge",
+          "discretionary_override": false,
+          "tape_confirmed": true,
+          "account_size": 50000,
+          "risk_dollars": 100,
+          "contracts": 1,
+          "move_stop_to_breakeven_after_points": 35,
+          "scaling_allowed_by_program": false,
+          "max_contracts_allowed": 1
+        },
+        "external_program_rules": {
+          "daily_max_loss_verified": true,
+          "drawdown_verified": true,
+          "contract_limits_verified": true,
+          "source_text_provided": true
+        }
+      },
+      "provenance": {
+        "source_id": "fomc_press_releases",
+        "source_name": "Federal Reserve Press Releases",
+        "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260526a.htm",
+        "fetched_at": "2026-05-26T00:00:00Z",
+        "author_type": "central_bank",
+        "source_type": "rss",
+        "source_tier": "official",
+        "confidence": 0.99,
+        "verification_status": "verified",
+        "verification_reason": "source verified",
+        "evidence_text": "The Federal Reserve kept rates unchanged and emphasized incoming data dependence."
+      }
+    },
+    {
+      "insight_id": "cme_economic_calendar-1",
+      "title": "US macro calendar highlights include CPI and employment events likely to impact index futures volatility.",
+      "signal_type": "macro_context",
+      "direction_bias": "neutral",
+      "orb_relevance": 0.6,
+      "recency_minutes": 30,
+      "rule_alignment": {
+        "deterministic": true,
+        "zone_edge_only": true,
+        "tape_confirmed": true
+      },
+      "trade_candidate": {
+        "trade_intent": {
+          "direction": "long",
+          "entry_price": 18205,
+          "stop_loss": 18195,
+          "take_profits": [
+            18225
+          ],
+          "order_is_bracket": true,
+          "entry_zone_type": "midrange",
+          "discretionary_override": false,
+          "tape_confirmed": true,
+          "account_size": 50000,
+          "risk_dollars": 90,
+          "contracts": 1,
+          "move_stop_to_breakeven_after_points": 35,
+          "scaling_allowed_by_program": false,
+          "max_contracts_allowed": 1
+        },
+        "external_program_rules": {
+          "daily_max_loss_verified": true,
+          "drawdown_verified": true,
+          "contract_limits_verified": true,
+          "source_text_provided": true
+        }
+      },
+      "provenance": {
+        "source_id": "cme_economic_calendar",
+        "source_name": "CME Economic Releases",
+        "source_url": "https://www.cmegroup.com/markets/equities.html",
+        "fetched_at": "2026-05-26T00:00:00Z",
+        "author_type": "exchange",
+        "source_type": "web_page",
+        "source_tier": "macro_api",
+        "confidence": 0.99,
+        "verification_status": "verified",
+        "verification_reason": "source verified",
+        "evidence_text": "US macro calendar highlights include CPI and employment events likely to impact index futures volatility."
+      }
+    },
+    {
+      "insight_id": "stlouisfed_research-1",
+      "title": "Labor market cooling and rates sensitivity",
+      "signal_type": "macro_context",
+      "direction_bias": "neutral",
+      "orb_relevance": 0.6,
+      "recency_minutes": 120,
+      "rule_alignment": {
+        "deterministic": true,
+        "zone_edge_only": true,
+        "tape_confirmed": true
+      },
+      "trade_candidate": null,
+      "provenance": {
+        "source_id": "stlouisfed_research",
+        "source_name": "St. Louis Fed Research",
+        "source_url": "https://www.stlouisfed.org/on-the-economy/2026/may/labor-market-cooling",
+        "fetched_at": "2026-05-26T00:00:00Z",
+        "author_type": "research_desk",
+        "source_type": "rss",
+        "source_tier": "vetted_research",
+        "confidence": 0.95,
+        "verification_status": "verified",
+        "verification_reason": "source verified",
+        "evidence_text": "Research note highlights moderating labor momentum and implications for rate-sensitive assets."
+      }
+    }
+  ]
+}

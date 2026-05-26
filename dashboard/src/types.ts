@@ -168,3 +168,34 @@ export interface RankedOpportunity {
   warnings: string[];
   rank?: number;
 }
+
+export interface InternetInsightScoreBreakdown {
+  relevance_component: number;
+  reliability_component: number;
+  recency_component: number;
+  rule_alignment_component: number;
+}
+
+export interface RankedInternetInsight {
+  insight_id: string;
+  title: string;
+  source_name: string;
+  source_url: string;
+  verification_status: 'verified' | 'rejected';
+  confidence: number;
+  score: number;
+  score_breakdown: InternetInsightScoreBreakdown;
+  status: 'rule_qualified' | 'blocked' | 'informational';
+  reasons: string[];
+  evidence_text: string;
+  fetched_at: string;
+  rank?: number;
+}
+
+export interface InternetIntelligenceFeed {
+  batch_id: string;
+  generated_at: string;
+  rule_qualified: RankedInternetInsight[];
+  blocked: RankedInternetInsight[];
+  informational: RankedInternetInsight[];
+}

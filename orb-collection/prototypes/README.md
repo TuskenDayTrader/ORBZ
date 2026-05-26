@@ -5,8 +5,11 @@
 - `rule_engine.py` — shared Rule 1 and compliance helpers for prototype validators/rankers.
 - `rule1_validator.py` — Python replay validator for Rule 1 + mechanical compliance enforcement.
 - `opportunity_ranker.py` — Python prototype for selected-ticker opportunity ranking from structured screenshot extraction.
+- `internet_intel/` — deterministic internet ingestion, normalization, validation gate, ranking, and drift monitoring module.
 - `tradingview-rule1-prototype.pine` — TradingView indicator prototype for Rule 1 with compliance gate.
 - `examples/screenshot-opportunity-batch-v1.json` — structured screenshot-analysis input example for the ranker.
+- `examples/raw-internet-intel-snapshot-v1.json` — fixture input for internet ingestion.
+- `examples/internet-intelligence-batch-v1.json` — normalized output for internet intelligence scoring.
 - `parity-check-2026-04-22-YM.md` — parity criteria and expected outcome.
 - `results/` — Python validator outputs.
 
@@ -36,4 +39,15 @@ From repository root:
 
 ```bash
 python3 /home/runner/work/ORBZ/ORBZ/orb-collection/prototypes/opportunity_ranker.py
+```
+
+## Run internet intelligence pipeline
+
+From repository root:
+
+```bash
+python3 /home/runner/work/ORBZ/ORBZ/orb-collection/prototypes/internet_intel/ingest.py --fixture /home/runner/work/ORBZ/ORBZ/orb-collection/prototypes/examples/raw-internet-intel-snapshot-v1.json --timestamp 2026-05-26T000000Z
+python3 /home/runner/work/ORBZ/ORBZ/orb-collection/prototypes/internet_intel/normalize.py
+python3 /home/runner/work/ORBZ/ORBZ/orb-collection/prototypes/internet_intel/ranker.py
+python3 /home/runner/work/ORBZ/ORBZ/orb-collection/prototypes/internet_intel/drift_monitor.py
 ```
