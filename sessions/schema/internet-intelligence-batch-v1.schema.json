@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ORB Internet Intelligence Batch v1",
+  "type": "object",
+  "required": ["batch_id", "fetched_at", "sources_seen", "insights"],
+  "properties": {
+    "batch_id": { "type": "string" },
+    "fetched_at": { "type": "string" },
+    "sources_seen": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "insights": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "insight_id",
+          "title",
+          "signal_type",
+          "direction_bias",
+          "orb_relevance",
+          "recency_minutes",
+          "rule_alignment",
+          "trade_candidate",
+          "provenance"
+        ],
+        "properties": {
+          "insight_id": { "type": "string" },
+          "title": { "type": "string" },
+          "signal_type": { "type": "string" },
+          "direction_bias": { "type": "string", "enum": ["bullish", "bearish", "neutral"] },
+          "orb_relevance": { "type": "number", "minimum": 0, "maximum": 1 },
+          "recency_minutes": { "type": "integer", "minimum": 0 },
+          "rule_alignment": {
+            "type": "object",
+            "required": ["deterministic", "zone_edge_only", "tape_confirmed"],
+            "properties": {
+              "deterministic": { "type": "boolean" },
+              "zone_edge_only": { "type": "boolean" },
+              "tape_confirmed": { "type": "boolean" }
+            }
+          },
+          "trade_candidate": {
+            "type": ["object", "null"],
+            "properties": {
+              "trade_intent": {
+                "type": "object",
+                "required": [
+                  "direction",
+                  "entry_price",
+                  "stop_loss",
+                  "take_profits",
+                  "order_is_bracket",
+                  "entry_zone_type",
+                  "discretionary_override",
+                  "tape_confirmed",
+                  "account_size",
+                  "risk_dollars",
+                  "contracts",
+                  "move_stop_to_breakeven_after_points"
+                ],
+                "properties": {
+                  "direction": { "type": "string", "enum": ["long", "short"] },
+                  "entry_price": { "type": "number" },
+                  "stop_loss": { "type": "number" },
+                  "take_profits": { "type": "array", "items": { "type": "number" }, "minItems": 1 },
+                  "order_is_bracket": { "type": "boolean" },
+                  "entry_zone_type": { "type": "string", "enum": ["support_edge", "resistance_edge", "session_edge", "midrange"] },
+                  "discretionary_override": { "type": "boolean" },
+                  "tape_confirmed": { "type": "boolean" },
+                  "account_size": { "type": "number" },
+                  "risk_dollars": { "type": "number" },
+                  "contracts": { "type": "integer", "minimum": 1 },
+                  "move_stop_to_breakeven_after_points": { "type": "number", "minimum": 0 },
+                  "scaling_allowed_by_program": { "type": "boolean" },
+                  "max_contracts_allowed": { "type": "integer", "minimum": 1 }
+                }
+              },
+              "external_program_rules": {
+                "type": "object",
+                "required": [
+                  "daily_max_loss_verified",
+                  "drawdown_verified",
+                  "contract_limits_verified",
+                  "source_text_provided"
+                ],
+                "properties": {
+                  "daily_max_loss_verified": { "type": "boolean" },
+                  "drawdown_verified": { "type": "boolean" },
+                  "contract_limits_verified": { "type": "boolean" },
+                  "source_text_provided": { "type": "boolean" }
+                }
+              }
+            }
+          },
+          "provenance": {
+            "type": "object",
+            "required": [
+              "source_id",
+              "source_name",
+              "source_url",
+              "fetched_at",
+              "author_type",
+              "source_type",
+              "source_tier",
+              "confidence",
+              "verification_status",
+              "verification_reason",
+              "evidence_text"
+            ],
+            "properties": {
+              "source_id": { "type": "string" },
+              "source_name": { "type": "string" },
+              "source_url": { "type": "string" },
+              "fetched_at": { "type": "string" },
+              "author_type": { "type": "string" },
+              "source_type": { "type": "string" },
+              "source_tier": { "type": "string" },
+              "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+              "verification_status": { "type": "string", "enum": ["verified", "rejected"] },
+              "verification_reason": { "type": "string" },
+              "evidence_text": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

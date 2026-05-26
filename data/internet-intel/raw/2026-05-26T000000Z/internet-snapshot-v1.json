@@ -1,0 +1,54 @@
+{
+  "snapshot_id": "internet-snapshot-2026-05-26T000000Z",
+  "fetched_at": "2026-05-26T00:00:00Z",
+  "sources": [
+    {
+      "source_id": "fomc_press_releases",
+      "source_name": "Federal Reserve Press Releases",
+      "source_type": "rss",
+      "source_tier": "official",
+      "author_type": "central_bank",
+      "endpoint": "https://www.federalreserve.gov/feeds/press_monetary.xml",
+      "verification_status": "verified",
+      "records": [
+        {
+          "title": "FOMC releases policy statement",
+          "link": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260526a.htm",
+          "published_at": "Tue, 26 May 2026 14:00:00 GMT",
+          "summary": "The Federal Reserve kept rates unchanged and emphasized incoming data dependence."
+        }
+      ]
+    },
+    {
+      "source_id": "cme_economic_calendar",
+      "source_name": "CME Economic Releases",
+      "source_type": "web_page",
+      "source_tier": "macro_api",
+      "author_type": "exchange",
+      "endpoint": "https://www.cmegroup.com/markets/equities.html",
+      "verification_status": "verified",
+      "records": [
+        {
+          "snippet": "US macro calendar highlights include CPI and employment events likely to impact index futures volatility."
+        }
+      ]
+    },
+    {
+      "source_id": "stlouisfed_research",
+      "source_name": "St. Louis Fed Research",
+      "source_type": "rss",
+      "source_tier": "vetted_research",
+      "author_type": "research_desk",
+      "endpoint": "https://www.stlouisfed.org/on-the-economy/rss",
+      "verification_status": "verified",
+      "records": [
+        {
+          "title": "Labor market cooling and rates sensitivity",
+          "link": "https://www.stlouisfed.org/on-the-economy/2026/may/labor-market-cooling",
+          "published_at": "Tue, 26 May 2026 10:00:00 GMT",
+          "summary": "Research note highlights moderating labor momentum and implications for rate-sensitive assets."
+        }
+      ]
+    }
+  ]
+}
