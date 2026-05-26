@@ -79,9 +79,11 @@ def fetch_url(
                 last_request_at[domain] = time.time()
                 _write_cache(cache_dir, url, body)
                 return body
-        except urllib.error.URLError:
+        except urllib.error.URLError as exc:
             if attempt == MAX_RETRIES - 1:
-                raise
+                raise RuntimeError(
+                    f"Failed to fetch {url} after {MAX_RETRIES} attempts ({type(exc).__name__}: {exc})"
+                ) from exc
             time.sleep(BACKOFF_SECONDS[min(attempt, len(BACKOFF_SECONDS) - 1)])
     raise RuntimeError("unreachable")
 
@@ -121,8 +123,18 @@ def parse_json_payload(payload_text: str, path: str | None = None, limit: int = 
 
 
 def parse_web_page_snippets(html_text: str, limit: int = 5) -> list[dict[str, Any]]:
-    no_script = re.sub(r"<script\b[^>]*>.*?</script\s*>", " ", html_text, flags=re.IGNORECASE | re.DOTALL)
-    no_style = re.sub(r"<style\b[^>]*>.*?</style\s*>", " ", no_script, flags=re.IGNORECASE | re.DOTALL)
+    no_script = re.sub(
+        r"<script\b[^>]*>.*?</script(?:\s+[^>]*)?>",
+        " ",
+        html_text,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
+    no_style = re.sub(
+        r"<style\b[^>]*>.*?</style(?:\s+[^>]*)?>",
+        " ",
+        no_script,
+        flags=re.IGNORECASE | re.DOTALL,
+    )
     text = re.sub(r"<[^>]+>", " ", no_style)
     lines = [line.strip() for line in re.split(r"[\r\n]+", text)]
     snippets = [line for line in lines if len(line) > 40]
