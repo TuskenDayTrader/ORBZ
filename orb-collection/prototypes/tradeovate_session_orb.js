@@ -76,7 +76,7 @@ function buildPlots() {
     return plots;
 }
 
-function buildSchemeStyles(isLight) {
+function buildSchemeStyles(isLightTheme) {
     const styles = {};
 
     Object.values(SESSION_DEFS).forEach((session) => {
@@ -85,10 +85,10 @@ function buildSchemeStyles(isLight) {
             const opacity = duration === 15 ? 0.95 : duration === 30 ? 0.8 : 0.65;
             const baseColor =
                 session.key === "asia"
-                    ? (isLight ? "#6b5cff" : "#8c7cff")
+                    ? (isLightTheme ? "#6b5cff" : "#8c7cff")
                     : session.key === "london"
-                        ? (isLight ? "#0b7fab" : "#3ec1f3")
-                        : (isLight ? "#b85c00" : "#ffb14e");
+                        ? (isLightTheme ? "#0b7fab" : "#3ec1f3")
+                        : (isLightTheme ? "#b85c00" : "#ffb14e");
 
             styles[sessionPlotName(session.key, duration, "High")] = {
                 color: baseColor,
@@ -109,7 +109,8 @@ function buildSchemeStyles(isLight) {
 function buildParams() {
     const params = {
         showSweeps: predef.paramSpecs.bool(true),
-        sweepOffsetTicks: predef.paramSpecs.number(6, 1, 0)
+        // Controls how far sweep labels sit away from the swept price level.
+        sweepOffsetTicks: predef.paramSpecs.number(6, 1, 1)
     };
 
     Object.values(SESSION_DEFS).forEach((session) => {
@@ -231,7 +232,7 @@ function getNyParts(date) {
 
 function isInSession(minuteOfDay, startMinute, endMinute) {
     if (startMinute === endMinute) {
-        return true;
+        return false;
     }
 
     if (startMinute < endMinute) {
@@ -362,8 +363,8 @@ class TradeovateSessionOrb {
                     const orb = state.orbs[duration];
                     // Keep updating until the bucket is complete, then stop mutating it.
                     if (elapsedMinutes < duration) {
-                        orb.high = orb.high === undefined ? d.high() : Math.max(orb.high, d.high());
-                        orb.low = orb.low === undefined ? d.low() : Math.min(orb.low, d.low());
+                        orb.high = Math.max(orb.high, d.high());
+                        orb.low = Math.min(orb.low, d.low());
                     } else {
                         orb.complete = true;
                     }
@@ -406,7 +407,7 @@ class TradeovateSessionOrb {
                 reference.highSwept = true;
                 events.push({
                     text: `${reference.label} H SWP`,
-                    y: Math.max(d.high(), reference.high),
+                    y: reference.high,
                     color: "#ff6b6b",
                     direction: "high"
                 });
@@ -416,7 +417,7 @@ class TradeovateSessionOrb {
                 reference.lowSwept = true;
                 events.push({
                     text: `${reference.label} L SWP`,
-                    y: Math.min(d.low(), reference.low),
+                    y: reference.low,
                     color: "#51cf66",
                     direction: "low"
                 });
