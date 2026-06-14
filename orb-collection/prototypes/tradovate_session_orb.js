@@ -6,16 +6,38 @@ const { du, op, px } = require("./tools/graphics");
  * Tradovate session ORB overlay.
  * - NY PM removed on purpose.
  * - Session windows are interpreted in America/New_York time.
- * - ORB values are accumulated from each session open for 15/30/60 minutes,
+ * - ORB values are accumulated from each session open for 5/15/30/60 minutes,
  *   then the last computed value is returned on every later bar so the line extends.
  * - Sweep markers use simple deterministic logic:
  *   high sweep = bar trades above a reference and closes back below it;
  *   low sweep = bar trades below a reference and closes back above it.
+ * - GLOBEX session (18:00–09:30 ET) tracks the overnight range high/low and
+ *   provides sweep reference levels used as key pre-NY context (see learning docs:
+ *   "Globex high" / "Globex low" are marked before every trading day).
+ * - Backend signal engine (not plotted — no UI clutter):
+ *   - IBH/IBL + VWAP/ORB-5 convergence detection (Rules 1 & 4)
+ *   - ORB-5 fast breakout detection against NY AM session open
+ *   These are available in `this.signals` for downstream alert or filter use and
+ *   are designed to remain prop-firm compliant (bracket-only, zone-edge-only).
  */
 
-const DURATIONS = [15, 30, 60];
+// 5-minute ORB added as the fastest entry-timing frame (see 02-timeframe-playbooks).
+const DURATIONS = [5, 15, 30, 60];
 
 const SESSION_DEFS = {
+    // Overnight Globex session: CME equity futures open at 18:00 ET, run until NY AM open.
+    // Tracks the full overnight range high/low — these are primary pre-market reference levels.
+    globex: {
+        key: "globex",
+        title: "Globex",
+        shortLabel: "GBX",
+        showKey: "showGlobex",
+        colorKey: "globexColor",
+        startHourKey: "globexStartHour",
+        startMinuteKey: "globexStartMinute",
+        endHourKey: "globexEndHour",
+        endMinuteKey: "globexEndMinute"
+    },
     asia: {
         key: "asia",
         title: "Asia",
@@ -81,14 +103,17 @@ function buildSchemeStyles(isLightTheme) {
 
     Object.values(SESSION_DEFS).forEach((session) => {
         DURATIONS.forEach((duration) => {
-            const width = duration === 15 ? 1 : duration === 30 ? 2 : 3;
-            const opacity = duration === 15 ? 0.95 : duration === 30 ? 0.8 : 0.65;
+            // 5m = thinnest/most transparent; 60m = thickest/most opaque
+            const width = duration === 5 ? 1 : duration === 15 ? 1 : duration === 30 ? 2 : 3;
+            const opacity = duration === 5 ? 1.0 : duration === 15 ? 0.95 : duration === 30 ? 0.8 : 0.65;
             const baseColor =
-                session.key === "asia"
-                    ? (isLightTheme ? "#6b5cff" : "#8c7cff")
-                    : session.key === "london"
-                        ? (isLightTheme ? "#0b7fab" : "#3ec1f3")
-                        : (isLightTheme ? "#b85c00" : "#ffb14e");
+                session.key === "globex"
+                    ? (isLightTheme ? "#2e8b57" : "#50c878")
+                    : session.key === "asia"
+                        ? (isLightTheme ? "#6b5cff" : "#8c7cff")
+                        : session.key === "london"
+                            ? (isLightTheme ? "#0b7fab" : "#3ec1f3")
+                            : (isLightTheme ? "#b85c00" : "#ffb14e");
 
             styles[sessionPlotName(session.key, duration, "High")] = {
                 color: baseColor,
@@ -115,13 +140,28 @@ function buildParams() {
 
     Object.values(SESSION_DEFS).forEach((session) => {
         params[session.showKey] = predef.paramSpecs.bool(true);
+        // ORB duration toggles — 5m added as the fastest entry-timing frame.
+        params[`${session.key}5`] = predef.paramSpecs.bool(true);
         params[`${session.key}15`] = predef.paramSpecs.bool(true);
         params[`${session.key}30`] = predef.paramSpecs.bool(true);
         params[`${session.key}60`] = predef.paramSpecs.bool(true);
         params[session.colorKey] = predef.paramSpecs.color(
-            session.key === "asia" ? "#8c7cff" : session.key === "london" ? "#3ec1f3" : "#ffb14e"
+            session.key === "globex"
+                ? "#50c878"
+                : session.key === "asia"
+                    ? "#8c7cff"
+                    : session.key === "london"
+                        ? "#3ec1f3"
+                        : "#ffb14e"
         );
     });
+
+    // Globex: CME equity futures overnight session, 18:00–09:30 ET.
+    // This spans midnight so endHour < startHour (handled by isInSession).
+    params.globexStartHour = predef.paramSpecs.number(18, 1, 0);
+    params.globexStartMinute = predef.paramSpecs.number(0, 1, 0);
+    params.globexEndHour = predef.paramSpecs.number(9, 1, 0);
+    params.globexEndMinute = predef.paramSpecs.number(30, 1, 0);
 
     params.asiaStartHour = predef.paramSpecs.number(20, 1, 0);
     params.asiaStartMinute = predef.paramSpecs.number(0, 1, 0);
@@ -252,6 +292,7 @@ class TradovateSessionOrb {
         this.sweepRefs = {
             priorDay: createSweepRef("PD"),
             priorWeek: createSweepRef("PW"),
+            globex: createSweepRef("GBX"),
             asia: createSweepRef("AS"),
             london: createSweepRef("LDN"),
             nyam: createSweepRef("NY")
@@ -263,6 +304,35 @@ class TradovateSessionOrb {
         this.currentWeekKey = undefined;
         this.currentWeekHigh = undefined;
         this.currentWeekLow = undefined;
+
+        /*
+         * Backend signal engine — not plotted, no UI clutter.
+         * Implements Rule 1 (IBH/IBL wick rejection + VWAP/ORB convergence) and
+         * Rule 4 (VWAP/ORBL convergence pivot) from rules/rule-set-v1.md.
+         * ORB-5 breakout state is reset each NY AM session.
+         * These values are available for alert conditions or future filter use
+         * without cluttering the visible indicator.
+         */
+        this.signals = {
+            // Rule 1 state
+            ibhWickRejected: false,
+            iblWickRejected: false,
+            rule1BearActive: false,
+            rule1BullActive: false,
+            // Rule 4 VWAP/ORB5 convergence (updated each NY AM bar)
+            vwapOrbConvergence: false,
+            vwapOrbConvergenceLevel: undefined,
+            // ORB-5 breakout tracking (NY AM)
+            orb5High: undefined,
+            orb5Low: undefined,
+            orb5BreakoutLong: false,
+            orb5BreakoutShort: false,
+            // Simple VWAP accumulator (price * volume sum / volume sum)
+            _vwapPriceVolSum: 0,
+            _vwapVolSum: 0,
+            _vwapDayKey: undefined,
+            vwap: undefined
+        };
     }
 
     map(d, index, history) {
@@ -273,6 +343,7 @@ class TradovateSessionOrb {
 
         this.updateDayAndWeekRefs(d, currentNy);
         this.updateSessions(d, currentNy, previousNy);
+        this.updateBackendSignals(d, currentNy);
 
         const result = {
             style: {}
@@ -397,6 +468,7 @@ class TradovateSessionOrb {
         const refs = [
             this.sweepRefs.priorDay,
             this.sweepRefs.priorWeek,
+            this.sweepRefs.globex,
             this.sweepRefs.asia,
             this.sweepRefs.london,
             this.sweepRefs.nyam
@@ -446,19 +518,154 @@ class TradovateSessionOrb {
             textAlignment: "centerMiddle"
         }));
     }
+
+    /*
+     * Backend signal engine — invisible, no chart clutter.
+     *
+     * Implements the logic from rules/rule-set-v1.md and the learning docs:
+     *
+     * VWAP (Rule 4 + Rule 1 convergence):
+     *   A typical-price VWAP is accumulated per trading day.  When the NY AM
+     *   ORB-5 level converges with the running VWAP to within the configured
+     *   threshold, the pivot is flagged (vwapOrbConvergence = true).  Loss of
+     *   that level is a mandatory bearish bias flip; reclaim is a mandatory
+     *   bullish bias flip.
+     *
+     * IBH/IBL wick-rejection (Rule 1):
+     *   Once the NY AM IB-60 high/low levels are set (complete ORB-60), each
+     *   bar is checked for a wick-rejection signature at those levels.  The
+     *   signal resets only at the start of each NY AM session.
+     *
+     * ORB-5 breakout (fast-entry timing):
+     *   As soon as the NY AM ORB-5 bucket completes, breakout conditions are
+     *   evaluated on every subsequent bar: close above ORB-5 high = long signal;
+     *   close below ORB-5 low = short signal.  Signals are one-shot per session.
+     *
+     * All state lives in this.signals and is intentionally separate from the
+     * plotted data so it never clutters the indicator surface.
+     */
+    updateBackendSignals(d, currentNy) {
+        const s = this.signals;
+
+        // ---- VWAP accumulation (resets at NY trading-day boundary) ----
+        // Use typical price (HLC/3) consistent with standard VWAP definition.
+        if (s._vwapDayKey !== currentNy.dayKey) {
+            s._vwapDayKey = currentNy.dayKey;
+            s._vwapPriceVolSum = 0;
+            s._vwapVolSum = 0;
+            s.vwap = undefined;
+            // Reset session-scoped Rule 1 flags on new day.
+            s.ibhWickRejected = false;
+            s.iblWickRejected = false;
+            s.rule1BearActive = false;
+            s.rule1BullActive = false;
+            s.vwapOrbConvergence = false;
+            s.vwapOrbConvergenceLevel = undefined;
+            s.orb5High = undefined;
+            s.orb5Low = undefined;
+            s.orb5BreakoutLong = false;
+            s.orb5BreakoutShort = false;
+        }
+
+        const vol = d.volume ? d.volume() : 0;
+        if (vol > 0) {
+            const typical = (d.high() + d.low() + d.close()) / 3;
+            s._vwapPriceVolSum += typical * vol;
+            s._vwapVolSum += vol;
+            s.vwap = s._vwapVolSum > 0 ? s._vwapPriceVolSum / s._vwapVolSum : undefined;
+        }
+
+        // ---- NY AM session backend signals ----
+        const nyAmState = this.sessions.nyam;
+        if (!nyAmState.active) {
+            return;
+        }
+
+        const orb5 = nyAmState.orbs[5];
+        const orb60 = nyAmState.orbs[60];
+
+        // Capture ORB-5 levels once the 5-minute bucket is complete.
+        if (orb5.complete && s.orb5High === undefined) {
+            s.orb5High = orb5.high;
+            s.orb5Low = orb5.low;
+        }
+
+        // Rule 4: VWAP / ORB-5 convergence detection.
+        // When VWAP and the ORB-5 high or low are within the configured tick
+        // threshold, flag the pivot level for bias logic.
+        if (s.vwap !== undefined && s.orb5High !== undefined) {
+            const tickSize = (this.contractInfo && this.contractInfo.tickSize) ? this.contractInfo.tickSize : 1;
+            const convergenceThreshold = tickSize * 20; // ~5 YM points at 1-tick resolution
+            const distHigh = Math.abs(s.vwap - s.orb5High);
+            const distLow = Math.abs(s.vwap - s.orb5Low);
+            if (distHigh <= convergenceThreshold) {
+                s.vwapOrbConvergence = true;
+                s.vwapOrbConvergenceLevel = (s.vwap + s.orb5High) / 2;
+            } else if (distLow <= convergenceThreshold) {
+                s.vwapOrbConvergence = true;
+                s.vwapOrbConvergenceLevel = (s.vwap + s.orb5Low) / 2;
+            }
+        }
+
+        // Rule 1: IBH/IBL wick-rejection detection against the IB-60 levels.
+        // Once the 60-minute bucket is complete the IBH and IBL are fixed.
+        if (orb60.complete && orb60.high !== undefined && orb60.low !== undefined) {
+            const tickSize = (this.contractInfo && this.contractInfo.tickSize) ? this.contractInfo.tickSize : 1;
+            const wickThreshold = tickSize * 4; // 4-tick minimum wick (matches Pine prototype)
+            const upperWick = d.high() - Math.max(d.open(), d.close());
+            const lowerWick = Math.min(d.open(), d.close()) - d.low();
+
+            // IBH rejection: bar spikes above IB high but closes back below it with a real wick.
+            if (!s.ibhWickRejected && d.high() > orb60.high && d.close() < orb60.high && upperWick >= wickThreshold) {
+                s.ibhWickRejected = true;
+            }
+            // IBL rejection: bar spikes below IB low but closes back above it with a real wick.
+            if (!s.iblWickRejected && d.low() < orb60.low && d.close() > orb60.low && lowerWick >= wickThreshold) {
+                s.iblWickRejected = true;
+            }
+
+            // Rule 1 bearish: IBH wick rejection already seen AND current close drops below
+            // the VWAP/ORB-5 convergence pivot (or raw VWAP if no convergence detected).
+            if (s.ibhWickRejected && !s.rule1BearActive && s.vwap !== undefined) {
+                const pivotRef = s.vwapOrbConvergence ? s.vwapOrbConvergenceLevel : s.vwap;
+                if (pivotRef !== undefined && d.close() < pivotRef) {
+                    s.rule1BearActive = true;
+                }
+            }
+
+            // Rule 1 bullish: IBL wick rejection already seen AND current close climbs above
+            // the VWAP/ORB-5 convergence pivot (or raw VWAP if no convergence detected).
+            if (s.iblWickRejected && !s.rule1BullActive && s.vwap !== undefined) {
+                const pivotRef = s.vwapOrbConvergence ? s.vwapOrbConvergenceLevel : s.vwap;
+                if (pivotRef !== undefined && d.close() > pivotRef) {
+                    s.rule1BullActive = true;
+                }
+            }
+        }
+
+        // ORB-5 breakout detection (fast entry-timing signal, one-shot per session).
+        if (s.orb5High !== undefined && s.orb5Low !== undefined) {
+            if (!s.orb5BreakoutLong && d.close() > s.orb5High) {
+                s.orb5BreakoutLong = true;
+            }
+            if (!s.orb5BreakoutShort && d.close() < s.orb5Low) {
+                s.orb5BreakoutShort = true;
+            }
+        }
+    }
 }
 
 const plots = buildPlots();
 
 module.exports = {
     name: "sessionOrbSweep",
-    description: "Asia/London/NY AM ORB levels with simple sweep markers.",
+    description: "Globex/Asia/London/NY AM ORB levels (5/15/30/60m) with sweep markers and backend signal engine.",
     calculator: TradovateSessionOrb,
     inputType: meta.InputType.BARS,
     areaChoice: meta.AreaChoice.OVERLAY,
     params: buildParams(),
     plots,
-    tags: ["ORB", "Sessions", "Levels"],
+    tags: ["ORB", "Sessions", "Levels", "Globex"],
     schemeStyles: {
         dark: buildSchemeStyles(false),
         light: buildSchemeStyles(true)
