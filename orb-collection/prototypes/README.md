@@ -7,7 +7,7 @@
 - `opportunity_ranker.py` — Python prototype for selected-ticker opportunity ranking from structured screenshot extraction.
 - `internet_intel/` — deterministic internet ingestion, normalization, validation gate, ranking, and drift monitoring module.
 - `tradingview-rule1-prototype.pine` — TradingView indicator prototype for Rule 1 with compliance gate.
-- `tradeovate_session_orb.js` — Tradovate custom indicator for Asia/London/NY AM ORB levels with simple sweep markers.
+- `tradovate_session_orb.js` — Tradovate custom indicator for Asia/London/NY AM ORB levels with simple sweep markers.
 - `examples/screenshot-opportunity-batch-v1.json` — structured screenshot-analysis input example for the ranker.
 - `examples/raw-internet-intel-snapshot-v1.json` — fixture input for internet ingestion.
 - `examples/internet-intelligence-batch-v1.json` — normalized output for internet intelligence scoring.

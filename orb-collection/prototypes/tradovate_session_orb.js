@@ -3,7 +3,7 @@ const meta = require("./tools/meta");
 const { du, op, px } = require("./tools/graphics");
 
 /*
- * Tradeovate session ORB overlay.
+ * Tradovate session ORB overlay.
  * - NY PM removed on purpose.
  * - Session windows are interpreted in America/New_York time.
  * - ORB values are accumulated from each session open for 15/30/60 minutes,
@@ -242,7 +242,7 @@ function isInSession(minuteOfDay, startMinute, endMinute) {
     return minuteOfDay >= startMinute || minuteOfDay < endMinute;
 }
 
-class TradeovateSessionOrb {
+class TradovateSessionOrb {
     init() {
         this.sessions = Object.keys(SESSION_DEFS).reduce((acc, key) => {
             acc[key] = createSessionState();
@@ -453,7 +453,7 @@ const plots = buildPlots();
 module.exports = {
     name: "sessionOrbSweep",
     description: "Asia/London/NY AM ORB levels with simple sweep markers.",
-    calculator: TradeovateSessionOrb,
+    calculator: TradovateSessionOrb,
     inputType: meta.InputType.BARS,
     areaChoice: meta.AreaChoice.OVERLAY,
     params: buildParams(),
