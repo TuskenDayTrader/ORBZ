@@ -73,6 +73,15 @@ const SESSION_DEFS = {
     }
 };
 
+// Minimum wick size (in ticks) for a valid IBH/IBL wick-rejection bar (Rule 1).
+// Matches the 4-tick threshold used in the TradingView Pine prototype.
+const WICK_REJECTION_THRESHOLD_TICKS = 4;
+
+// Maximum tick distance between VWAP and ORB-5 high/low for the pivot to be
+// considered converged (Rule 4).  At YM's 1-tick = 1-point resolution, 20 ticks
+// equals ~5 YM points — tight enough to act as a single level.
+const CONVERGENCE_THRESHOLD_TICKS = 20;
+
 function sessionPlotName(sessionKey, duration, side) {
     return `${sessionKey}${duration}${side}`;
 }
@@ -595,7 +604,7 @@ class TradovateSessionOrb {
         // threshold, flag the pivot level for bias logic.
         if (s.vwap !== undefined && s.orb5High !== undefined) {
             const tickSize = (this.contractInfo && this.contractInfo.tickSize) ? this.contractInfo.tickSize : 1;
-            const convergenceThreshold = tickSize * 20; // ~5 YM points at 1-tick resolution
+            const convergenceThreshold = tickSize * CONVERGENCE_THRESHOLD_TICKS;
             const distHigh = Math.abs(s.vwap - s.orb5High);
             const distLow = Math.abs(s.vwap - s.orb5Low);
             if (distHigh <= convergenceThreshold) {
@@ -611,7 +620,7 @@ class TradovateSessionOrb {
         // Once the 60-minute bucket is complete the IBH and IBL are fixed.
         if (orb60.complete && orb60.high !== undefined && orb60.low !== undefined) {
             const tickSize = (this.contractInfo && this.contractInfo.tickSize) ? this.contractInfo.tickSize : 1;
-            const wickThreshold = tickSize * 4; // 4-tick minimum wick (matches Pine prototype)
+            const wickThreshold = tickSize * WICK_REJECTION_THRESHOLD_TICKS;
             const upperWick = d.high() - Math.max(d.open(), d.close());
             const lowerWick = Math.min(d.open(), d.close()) - d.low();
 
