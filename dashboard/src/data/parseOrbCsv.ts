@@ -32,8 +32,8 @@ export function getUniqueDates(rows: CsvOrbRow[]): string[] {
 
 const INSTRUMENT_RANGES: Record<string, [number, number]> = {
   YM: [40000, 60000],
-  NQ: [15000, 25000],
-  ES: [4000, 7000],
+  NQ: [15000, 30000],
+  ES: [4000, 8000],
   SPY: [300, 700],
 };
 

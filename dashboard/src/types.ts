@@ -1,3 +1,5 @@
+export type InstrumentCode = 'YM' | 'NQ' | 'ES';
+
 export interface OrbLevel {
   orbh_15m: number;
   orbl_15m: number;

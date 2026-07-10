@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import './App.css';
-import type { CsvOrbRow, NormalizedSession, OpportunityBatch, InternetIntelligenceFeed } from './types';
+import type { CsvOrbRow, InstrumentCode, NormalizedSession, OpportunityBatch, InternetIntelligenceFeed } from './types';
 import { parseOrbCsv, getUniqueDates } from './data/parseOrbCsv';
 import { SessionSelector } from './components/SessionSelector';
 import { LevelsPanel } from './components/LevelsPanel';
@@ -12,7 +12,23 @@ import { ForecastPanel } from './components/ForecastPanel';
 import { EventTimeline } from './components/EventTimeline';
 import { InternetIntelligencePanel } from './components/InternetIntelligencePanel';
 
+const INSTRUMENT_DETAILS: Record<InstrumentCode, { title: string; subtitle: string }> = {
+  YM: {
+    title: 'ORBZ DASHBOARD — YM FUTURES ANALYSIS',
+    subtitle: 'Opening Range Breakout System · E-mini Dow (YM) · Real-Time Rule Engine · Compliance Verification',
+  },
+  NQ: {
+    title: 'ORBZ DASHBOARD — NQ FUTURES ANALYSIS',
+    subtitle: 'Opening Range Breakout System · E-mini Nasdaq-100 (NQ) · Real-Time Rule Engine · Compliance Verification',
+  },
+  ES: {
+    title: 'ORBZ DASHBOARD — ES FUTURES ANALYSIS',
+    subtitle: 'Opening Range Breakout System · E-mini S&P 500 (ES) · Real-Time Rule Engine · Compliance Verification',
+  },
+};
+
 function App() {
+  const [selectedInstrument, setSelectedInstrument] = useState<InstrumentCode>('YM');
   const [csvRows, setCsvRows] = useState<CsvOrbRow[]>([]);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTf, setSelectedTf] = useState<'15m' | '30m' | '60m'>('15m');
@@ -21,18 +37,24 @@ function App() {
   const [internetFeed, setInternetFeed] = useState<InternetIntelligenceFeed | null>(null);
 
   useEffect(() => {
-    fetch('/data/ym-orb-levels.csv')
+    const csvPath = `/data/${selectedInstrument.toLowerCase()}-orb-levels.csv`;
+
+    fetch(csvPath)
       .then(r => r.text())
       .then(raw => {
         const rows = parseOrbCsv(raw);
         setCsvRows(rows);
         const dates = getUniqueDates(rows);
-        if (dates.length > 0) {
-          setSelectedDate(dates[dates.length - 1]);
-        }
+        setSelectedDate(dates[dates.length - 1] ?? '');
       })
-      .catch(console.error);
+      .catch(error => {
+        console.error(error);
+        setCsvRows([]);
+        setSelectedDate('');
+      });
+  }, [selectedInstrument]);
 
+  useEffect(() => {
     fetch('/data/screenshot-opportunity-batch-v1.json')
       .then(r => r.json())
       .then(setBatch)
@@ -46,7 +68,7 @@ function App() {
 
   useEffect(() => {
     if (!selectedDate) return;
-    const sessionId = `${selectedDate}-YM`;
+    const sessionId = `${selectedDate}-${selectedInstrument}`;
     fetch(`/data/sessions/${sessionId}.json`)
       .then(r => {
         if (!r.ok) throw new Error('Session not found');
@@ -54,29 +76,45 @@ function App() {
       })
       .then(setSession)
       .catch(() => setSession(null));
-  }, [selectedDate]);
+  }, [selectedDate, selectedInstrument]);
+
+  const details = INSTRUMENT_DETAILS[selectedInstrument];
 
   return (
     <div className="app">
       <div className="app-header">
-        <h1>ORBZ DASHBOARD — YM FUTURES ANALYSIS</h1>
-        <div className="subtitle">Opening Range Breakout System · Real-Time Rule Engine · Compliance Verification</div>
+        <h1>{details.title}</h1>
+        <div className="subtitle">{details.subtitle}</div>
       </div>
 
       <SessionSelector
+        selectedInstrument={selectedInstrument}
         rows={csvRows}
         selectedDate={selectedDate}
         selectedTf={selectedTf}
+        onInstrumentChange={setSelectedInstrument}
         onDateChange={setSelectedDate}
         onTfChange={setSelectedTf}
       />
 
       <div className="row">
-        <LevelsPanel session={session} csvRows={csvRows} selectedDate={selectedDate} selectedTf={selectedTf} />
+        <LevelsPanel
+          session={session}
+          csvRows={csvRows}
+          selectedDate={selectedDate}
+          selectedTf={selectedTf}
+          selectedInstrument={selectedInstrument}
+        />
         <TapePanel session={session} />
       </div>
 
-      <LevelsChart session={session} csvRows={csvRows} selectedDate={selectedDate} selectedTf={selectedTf} />
+      <LevelsChart
+        session={session}
+        csvRows={csvRows}
+        selectedDate={selectedDate}
+        selectedTf={selectedTf}
+        selectedInstrument={selectedInstrument}
+      />
 
       <div className="row">
         <RuleEnginePanel session={session} />

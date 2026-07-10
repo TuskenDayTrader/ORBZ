@@ -1,0 +1,74 @@
+{
+  "session_id": "2026-04-22-ES",
+  "date": "2026-04-22",
+  "instrument": "ES JUN26",
+  "levels": {
+    "orbh_15m": 7152,
+    "orbl_15m": 7138,
+    "orbh_30m": 7158,
+    "orbl_30m": 7138,
+    "ibh": 7164,
+    "ibl": 7138,
+    "vwap_ref": 7152,
+    "support_zones": ["7148/7152", "7138"],
+    "resistance_zones": ["7158", "7164/7166"]
+  },
+  "events": [
+    {
+      "timestamp_est": "2026-04-22T10:15:00-04:00",
+      "event_type": "ibl_rejection",
+      "level": 7138,
+      "note": "Opening range low held and buyers reclaimed the early dip"
+    },
+    {
+      "timestamp_est": "2026-04-22T11:45:00-04:00",
+      "event_type": "vwap_support",
+      "level": 7152,
+      "note": "VWAP and 15m ORBH remained supportive through midday"
+    },
+    {
+      "timestamp_est": "2026-04-22T14:45:00-04:00",
+      "event_type": "hod_probe",
+      "level": 7166,
+      "note": "Late-session push tested the day's highs while YM continued to lag"
+    }
+  ],
+  "tape": {
+    "nq_new_hod": true,
+    "ym_lagging": true,
+    "rty_lagging": true,
+    "dxy_firming": true,
+    "tlt_weakening": true
+  },
+  "derived_flags": {
+    "ibh_rejected_with_wick": false,
+    "vwap_orbl_lost_after_ibh_rejection": false,
+    "ibl_rejected_with_wick": true,
+    "vwap_reclaimed_after_ibl_rejection": true,
+    "vwap_orbl_converged_within_5": false,
+    "open_near_on_low": false,
+    "prior_day_strong_up": true
+  },
+  "trade_intent": {
+    "direction": "long",
+    "entry_price": 7153,
+    "stop_loss": 7146,
+    "take_profits": [7158, 7164, 7166],
+    "order_is_bracket": true,
+    "entry_zone_type": "breakout_retest",
+    "discretionary_override": false,
+    "tape_confirmed": true,
+    "account_size": 50000,
+    "risk_dollars": 125,
+    "contracts": 1,
+    "move_stop_to_breakeven_after_points": 6,
+    "scaling_allowed_by_program": false,
+    "max_contracts_allowed": 2
+  },
+  "external_program_rules": {
+    "daily_max_loss_verified": false,
+    "drawdown_verified": false,
+    "contract_limits_verified": false,
+    "source_text_provided": false
+  }
+}

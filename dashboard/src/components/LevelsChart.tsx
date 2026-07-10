@@ -2,16 +2,17 @@ import {
   ComposedChart, ReferenceLine, CartesianGrid,
   YAxis, XAxis, ResponsiveContainer, ReferenceArea, Tooltip
 } from 'recharts';
-import type { NormalizedSession, CsvOrbRow } from '../types';
+import type { NormalizedSession, CsvOrbRow, InstrumentCode } from '../types';
 
 interface Props {
   session: NormalizedSession | null;
   csvRows: CsvOrbRow[];
   selectedDate: string;
   selectedTf: '15m' | '30m' | '60m';
+  selectedInstrument: InstrumentCode;
 }
 
-export function LevelsChart({ session, csvRows, selectedDate, selectedTf }: Props) {
+export function LevelsChart({ session, csvRows, selectedDate, selectedTf, selectedInstrument }: Props) {
   const csvRow = csvRows.find(r => r.date === selectedDate && r.tf === selectedTf);
 
   if (!session && !csvRow) {
@@ -54,7 +55,7 @@ export function LevelsChart({ session, csvRows, selectedDate, selectedTf }: Prop
 
   return (
     <div className="panel">
-      <div className="panel-title">Levels Chart — {selectedDate} ({selectedTf})</div>
+      <div className="panel-title">Levels Chart — {selectedInstrument} {selectedDate} ({selectedTf})</div>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
         {orbh && <span className="badge badge-red">ORBH {orbh.toLocaleString()}</span>}
         {orbl && <span className="badge badge-amber">ORBL {orbl.toLocaleString()}</span>}

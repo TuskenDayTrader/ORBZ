@@ -1,4 +1,4 @@
-import type { NormalizedSession, CsvOrbRow } from '../types';
+import type { NormalizedSession, CsvOrbRow, InstrumentCode } from '../types';
 import { validateInstrumentScale } from '../data/parseOrbCsv';
 
 interface Props {
@@ -6,6 +6,7 @@ interface Props {
   csvRows: CsvOrbRow[];
   selectedDate: string;
   selectedTf: '15m' | '30m' | '60m';
+  selectedInstrument: InstrumentCode;
 }
 
 function fmt(n: number | undefined): string {
@@ -13,9 +14,9 @@ function fmt(n: number | undefined): string {
   return n.toLocaleString('en-US');
 }
 
-export function LevelsPanel({ session, csvRows, selectedDate, selectedTf }: Props) {
+export function LevelsPanel({ session, csvRows, selectedDate, selectedTf, selectedInstrument }: Props) {
   const csvRow = csvRows.find(r => r.date === selectedDate && r.tf === selectedTf);
-  const instrument = session?.instrument ?? 'YM JUN26';
+  const instrument = session?.instrument ?? selectedInstrument;
 
   const allLevels = session
     ? [session.levels.ibh, session.levels.ibl, session.levels.vwap_ref,
