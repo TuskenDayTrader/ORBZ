@@ -40,17 +40,24 @@ function App() {
     const csvPath = `/data/${selectedInstrument.toLowerCase()}-orb-levels.csv`;
 
     fetch(csvPath)
-      .then(r => r.text())
+      .then(r => {
+        if (!r.ok) throw new Error(`CSV not found: ${csvPath}`);
+        return r.text();
+      })
       .then(raw => {
         const rows = parseOrbCsv(raw);
         setCsvRows(rows);
         const dates = getUniqueDates(rows);
+        if (dates.length === 0) {
+          setSession(null);
+        }
         setSelectedDate(dates[dates.length - 1] ?? '');
       })
       .catch(error => {
         console.error(error);
         setCsvRows([]);
         setSelectedDate('');
+        setSession(null);
       });
   }, [selectedInstrument]);
 
